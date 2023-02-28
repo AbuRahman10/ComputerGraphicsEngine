@@ -1,7 +1,6 @@
 #include "easy_image.h"
 #include "ini_configuration.h"
 
-#include <fstream>
 #include <iostream>
 #include <stdexcept>
 #include <string>
@@ -11,9 +10,13 @@
 #include "Colour.h"
 #include "Functies.h"
 
-using namespace std;
+#include "l_parser.h"
+#include <fstream>
 
+using namespace std;
 using namespace img;
+using namespace LParser;
+
 
 EasyImage colorrectangle(unsigned int width, unsigned int height)
 {
@@ -30,13 +33,147 @@ EasyImage colorrectangle(unsigned int width, unsigned int height)
     return image;
 }
 
+EasyImage blocks(unsigned int Wi, unsigned int Hi, unsigned int Nx, unsigned int Ny, vector<double> wit, vector<double> zwart, bool invertColors)
+{
+    int Wb = Wi / Nx;
+    int Hb = Hi / Ny;
+    img::EasyImage image(Wi, Hi);
+
+    for (int x = 0; x < Hi; x++)
+    {
+        for (int y = 0; y < Wi; y++)
+        {
+            int Bx = x/Wb;
+            int By = y/Hb;
+
+            if (invertColors == false)
+            {
+                if ((Bx+By)%2 == 0)
+                {
+                    image(x,y).red = wit[0] * 255;
+                    image(x,y).green = wit[1] * 255;
+                    image(x,y).blue = wit[2] * 255;
+                }
+                else
+                {
+                    image(x,y).red = zwart[0] * 255;
+                    image(x,y).green = zwart[1] * 255;
+                    image(x,y).blue = zwart[2] * 255;
+                }
+            }
+            else
+            {
+                if ((Bx+By)%2 == 0)
+                {
+                    image(x,y).red = zwart[0] * 255;
+                    image(x,y).green = zwart[1] * 255;
+                    image(x,y).blue = zwart[2] * 255;
+                }
+                else
+                {
+                    image(x,y).red = wit[0] * 255;
+                    image(x,y).green = wit[1] * 255;
+                    image(x,y).blue = wit[2] * 255;
+                }
+            }
+        }
+    }
+
+    return image;
+}
+
+EasyImage quarterCircle(unsigned int Wi, unsigned int Hi, int N, vector<double> backgroundColor, vector<double> lineColor)
+{
+    int Hs = Hi / (N - 1); // verticale afstand
+    int Ws = Wi / (N - 1); // horizontale afstand
+
+    img::EasyImage image(Wi, Hi);
+
+    img::Color color(lineColor[0] * 255, lineColor[1] * 255, lineColor[2] * 255);
+
+    image.draw_line(0,Hi-1,Wi-1,Hi-1,color);
+    for (int i = 0; i < Hi-1; i++)
+    {
+        if (Ws*i < Wi and Hs*i < Hi)
+        {
+            image.draw_line(0,Ws*i,Hs*i,Hi-1,color);
+        }
+    }
+
+    return image;
+}
+
+EasyImage eye(unsigned int Wi, unsigned int Hi, int N, vector<double> backgroundColor, vector<double> lineColor)
+{
+    int Hs = Hi / (N - 1); // verticale afstand
+    int Ws = Wi / (N - 1); // horizontale afstand
+
+    img::EasyImage image(Wi, Hi);
+
+    img::Color color(lineColor[0] * 255, lineColor[1] * 255, lineColor[2] * 255);
+
+    image.draw_line(0,Hi-1,Wi-1,Hi-1,color);
+    for (int i = 0; i < Hi-1; i++)
+    {
+        if (Ws*i < Wi and Hs*i < Hi)
+        {
+            image.draw_line(0,Ws*i,Hs*i,Hi-1,color);
+        }
+    }
+    image.draw_line(0,0,Hi-1,0,color);
+
+    for (int i = 0; i < Hi-1; i++)
+    {
+        if (Ws*i < Wi and Hs*i < Hi)
+        {
+            image.draw_line(Ws*i,0,Hi-1,Hs*i,color);
+        }
+    }
+    image.draw_line(Hi-1,0,Hi-1,Hi-1,color);
+
+
+    return image;
+}
+
+EasyImage diamond(unsigned int Wi, unsigned int Hi, int N, vector<double> backgroundColor, vector<double> lineColor)
+{
+    int Hs = Hi / (N - 1); // verticale afstand
+    int Ws = Wi / (N - 1); // horizontale afstand
+
+    img::EasyImage image(Wi, Hi);
+
+    img::Color color(lineColor[0] * 255, lineColor[1] * 255, lineColor[2] * 255);
+
+    image.draw_line(0,Hi-1,Wi-1,Hi-1,color);
+    for (int i = 0; i < Hi-1; i++)
+    {
+        if (Ws*i < Wi and Hs*i < Hi)
+        {
+            image.draw_line(0,Ws*i,Hs*i,Hi-1,color);
+        }
+    }
+    image.draw_line(0,0,Hi-1,0,color);
+
+    for (int i = 0; i < Hi-1; i++)
+    {
+        if (Ws*i < Wi and Hs*i < Hi)
+        {
+            image.draw_line(Ws*i,0,Hi-1,Hs*i,color);
+        }
+    }
+    image.draw_line(Hi-1,0,Hi-1,Hi-1,color);
+
+    return image;
+}
+
 img::EasyImage generate_image(const ini::Configuration &configuration)
 {
     string type = configuration["General"]["type"].as_string_or_die();
+    string input_file = configuration["2DLSystem"]["inputfile"].as_string_or_die();
 
     if (type == "2DLSystem")
     {
-        if (configuration["2DLSystem"]["inputfile"].as_string_or_die() == "32_segment_curve.L2D")
+        if (input_file == "32_segment_curve.L2D")
         {
             Colour colors(1.0,0.0,0.0);
             Point2D point1(3,6);
