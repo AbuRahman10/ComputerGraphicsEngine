@@ -34,20 +34,28 @@ img::EasyImage generate_image(const ini::Configuration &configuration)
 {
     string type = configuration["General"]["type"].as_string_or_die();
 
-    if (type == "2DLSystem" and configuration["2DLSystem"]["inputfile"].as_string_or_die() == "32_segment_curve.L2D")
+    if (type == "2DLSystem")
     {
-        Colour colors(1.0,0.0,0.0);
-        Point2D point1(3,6);
-        Point2D point2(6,9);
-        Point2D point3(9,6);
-        Point2D point4(6,3);
-        Line2D line1(point1,point2,colors);
-        Line2D line2(point2,point3,colors);
-        Line2D line3(point3,point4,colors);
-        Line2D line4(point4,point1,colors);
-        Lines2D lines2D = {line1, line2, line3, line4};
+        if (configuration["2DLSystem"]["inputfile"].as_string_or_die() == "32_segment_curve.L2D")
+        {
+            Colour colors(1.0,0.0,0.0);
+            Point2D point1(3,6);
+            Point2D point2(6,9);
+            Point2D point3(9,6);
+            Point2D point4(6,3);
+            Line2D line1(point1,point2,colors);
+            Line2D line2(point2,point3,colors);
+            Line2D line3(point3,point4,colors);
+            Line2D line4(point4,point1,colors);
+            Lines2D lines2D = {line1, line2, line3, line4};
 
-        return Functies::draw2DLines(lines2D, 500);
+            return Functies::draw2DLines(lines2D, 500);
+        }
+        else
+        {
+            EasyImage image;
+            return image;
+        }
     }
     else
     {
