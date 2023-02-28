@@ -17,7 +17,17 @@ set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} ${OWN_GXX_FLAGS}")
 set(engine_sources
 	easy_image.cc
 	ini_configuration.cc
-	engine.cc Colour.cpp Colour.h Point2D.cpp Point2D.h Line2D.cpp Line2D.h Functies.cpp Functies.h)
+	engine.cc
+	Colour.cpp
+	Colour.h
+	Point2D.cpp
+	Point2D.h
+	Line2D.cpp
+	Line2D.h
+	Functies.cpp
+	Functies.h
+	l_parser.cc
+	l_parser.h)
 
 ############################################################
 # Create an executable
