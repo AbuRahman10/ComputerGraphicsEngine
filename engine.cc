@@ -46,8 +46,6 @@ img::EasyImage generate_image(const ini::Configuration &configuration)
         Line2D line3(point3,point4,colors);
         Line2D line4(point4,point1,colors);
         Lines2D lines2D = {line1, line2, line3, line4};
-        cout << "change";
-
 
         return Functies::draw2DLines(lines2D, 500);
     }
