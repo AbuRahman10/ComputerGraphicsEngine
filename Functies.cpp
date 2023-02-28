@@ -3,7 +3,22 @@
 //
 
 #include "Functies.h"
+#include <fstream>
+#include "l_parser.h"
+
 #include "cmath"
+#include "easy_image.h"
+
+#include <iostream>
+#include <string>
+
+#include "Line2D.h"
+#include "Point2D.h"
+#include "Colour.h"
+
+using namespace std;
+using namespace img;
+using namespace LParser;
 
 EasyImage Functies::draw2DLines(const Lines2D &lines, const int size)
 {
@@ -128,4 +143,17 @@ EasyImage Functies::draw2DLines(const Lines2D &lines, const int size)
         image.draw_line(xP1, yP1, xP2, yP2,color);
     }
     return image;
+}
+
+Lines2D Functies::drawLSystem(const LSystem2D &l_system)
+{
+    LSystem2D new_lsystem;
+
+    Lines2D lines2D;
+
+    ifstream input_stream("32_segment_curve.L2D");
+    input_stream >> new_lsystem;
+    input_stream.close();
+
+    return lines2D;
 }

@@ -175,6 +175,15 @@ img::EasyImage generate_image(const ini::Configuration &configuration)
     {
         if (input_file == "32_segment_curve.L2D")
         {
+            LSystem2D l_system;
+
+            Functies functies;
+
+            EasyImage image(500,500);
+            return image;
+        }
+        else
+        {
             Colour colors(1.0,0.0,0.0);
             Point2D point1(3,6);
             Point2D point2(6,9);
@@ -187,11 +196,6 @@ img::EasyImage generate_image(const ini::Configuration &configuration)
             Lines2D lines2D = {line1, line2, line3, line4};
 
             return Functies::draw2DLines(lines2D, 500);
-        }
-        else
-        {
-            EasyImage image;
-            return image;
         }
     }
     else

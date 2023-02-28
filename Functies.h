@@ -10,14 +10,21 @@
 #include "Line2D.h"
 #include "Colour.h"
 #include "Point2D.h"
+#include "l_parser.h"
+#include "ini_configuration.h"
 
 using namespace std;
 using namespace img;
+using namespace LParser;
+using namespace ini;
 
 class Functies
 {
 public:
+
     static EasyImage draw2DLines(const Lines2D &lines, const int size);
+
+    static Lines2D drawLSystem(const LSystem2D &l_system);
 };
 
 #endif //ENGINE_FUNCTIES_H
