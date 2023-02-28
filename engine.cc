@@ -177,10 +177,8 @@ img::EasyImage generate_image(const ini::Configuration &configuration)
         {
             LSystem2D l_system;
 
-            Functies functies;
+            return Functies::draw2DLines(Functies::drawLSystem(l_system), 500);
 
-            EasyImage image(500,500);
-            return image;
         }
         else
         {
