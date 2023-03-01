@@ -25,6 +25,8 @@ public:
     static EasyImage draw2DLines(const Lines2D &lines, const int size);
 
     static Lines2D drawLSystem(const LSystem2D &l_system);
+
+
 };
 
 #endif //ENGINE_FUNCTIES_H

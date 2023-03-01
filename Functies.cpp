@@ -42,7 +42,7 @@ EasyImage Functies::draw2DLines(const Lines2D &lines, const int size)
         {
             y_min = y_P1;
         }
-        if (y_P2 < y_P1)
+        if (y_P2 < y_min)
         {
             y_min = y_P2;
         }
@@ -51,7 +51,7 @@ EasyImage Functies::draw2DLines(const Lines2D &lines, const int size)
         {
             x_min = x_P1;
         }
-        if (x_P2 < x_P1)
+        if (x_P2 < y_min)
         {
             x_min = x_P2;
         }
@@ -60,7 +60,7 @@ EasyImage Functies::draw2DLines(const Lines2D &lines, const int size)
         {
             y_max = y_P1;
         }
-        if (y_P2 > y_P1)
+        if (y_P2 > y_max)
         {
             y_max = y_P2;
         }
@@ -69,7 +69,7 @@ EasyImage Functies::draw2DLines(const Lines2D &lines, const int size)
         {
             x_max = x_P1;
         }
-        if (y_P2 > y_P1)
+        if (y_P2 > y_max)
         {
             y_max = y_P2;
         }
@@ -151,11 +151,20 @@ Lines2D Functies::drawLSystem(const LSystem2D &l_system)
 
     // DE COMPONENTEN
     set<char> alfabet = l_system.get_alphabet();
-    string replacement = l_system.get_replacement(*alfabet.begin());
     string initiator = l_system.get_initiator();
     unsigned int iterations = l_system.get_nr_iterations();
     double starting_angle = l_system.get_starting_angle();
     double angle = l_system.get_angle();
+
+    //REPLACEMENTS
+    vector<pair<char,string>> replacements;
+
+    for (char i : alfabet)
+    {
+        string str = l_system.get_replacement(i);
+        pair<char,string> letter(i,str);
+        replacements.push_back(letter);
+    }
 
     starting_angle *= (pi/180);
     angle *= (pi/180);
@@ -163,7 +172,8 @@ Lines2D Functies::drawLSystem(const LSystem2D &l_system)
     double x = 0;
     double y = 0;
 
-    for (char i : replacement)
+
+    for (char i : initiator)
     {
         if (i == '-')
         {
@@ -173,15 +183,37 @@ Lines2D Functies::drawLSystem(const LSystem2D &l_system)
         {
             starting_angle += angle;
         }
-        else if (i == *initiator.begin())
+        else
         {
-            Point2D point1(x,y);
-            x += cos(starting_angle);
-            y += sin(starting_angle);
-            Point2D point2(x,y);
-            Colour color(0,0,0);
-            Line2D line(point1,point2,color);
-            lines.push_back(line);
+            for (pair<char,string> let : replacements)
+            {
+                if (let.first == i)
+                {
+                    for (char k : let.second)
+                    {
+                        if (k == '-')
+                        {
+                            starting_angle -= angle;
+                        }
+                        else if (k == '+')
+                        {
+                            starting_angle += angle;
+                        }
+                        else
+                        {
+                            Point2D point1(x,y);
+                            double cosa = cos(starting_angle);
+                            double sina = sin(starting_angle);
+                            x += cosa;
+                            y += sina;
+                            Point2D point2(x,y);
+                            Colour color(0,0,0);
+                            Line2D line(point1,point2,color);
+                            lines.push_back(line);
+                        }
+                    }
+                }
+            }
         }
     }
     return lines;
