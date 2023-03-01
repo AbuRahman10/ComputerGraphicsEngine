@@ -176,9 +176,7 @@ img::EasyImage generate_image(const ini::Configuration &configuration)
         if (input_file == "32_segment_curve.L2D")
         {
             LSystem2D l_system;
-
             return Functies::draw2DLines(Functies::drawLSystem(l_system), 500);
-
         }
         else
         {
