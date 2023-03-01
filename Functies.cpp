@@ -163,7 +163,7 @@ Lines2D Functies::drawLSystem(const LSystem2D &l_system)
     double x = 0;
     double y = 0;
 
-    for (char i : initiator)
+    for (char i : replacement)
     {
         if (i == '-')
         {
