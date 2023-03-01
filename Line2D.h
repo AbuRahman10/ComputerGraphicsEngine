@@ -7,9 +7,11 @@
 
 #include "Point2D.h"
 #include "Colour.h"
+#include "easy_image.h"
 #include "vector"
 
 using namespace std;
+using namespace img;
 
 class Line2D
 {

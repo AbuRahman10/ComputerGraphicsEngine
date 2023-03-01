@@ -1,10 +1,12 @@
 Alphabet = {F}
 
-Draw = {
+Draw =
+{
         F-> 1
 }
 
-Rules = {
+Rules =
+{
 	F -> "F"
 }
 

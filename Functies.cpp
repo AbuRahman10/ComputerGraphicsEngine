@@ -24,66 +24,54 @@ EasyImage Functies::draw2DLines(const Lines2D &lines, const int size)
 {
     // x.min; x.max; y.min; y.max;
 
-    int x_min = lines[0].p1.x;
-    int y_min = lines[0].p1.y;
+    double x_min = lines[0].p1.x;
+    double y_min = lines[0].p1.y;
 
-    int x_max = lines[0].p1.x;
-    int y_max = lines[0].p1.y;
+    double x_max = lines[0].p1.x;
+    double y_max = lines[0].p1.y;
 
     for (int i = 0; i < lines.size(); i++)
     {
-        int x_P1 = lines[i].p1.x;
-        int x_P2 = lines[i].p2.x;
+        double x_P1 = lines[i].p1.x;
+        double x_P2 = lines[i].p2.x;
 
-        int y_P1 = lines[i].p1.y;
-        int y_P2 = lines[i].p2.y;
+        double y_P1 = lines[i].p1.y;
+        double y_P2 = lines[i].p2.y;
 
         if (y_P1 < y_min)
         {
-            if (y_P2 < y_P1)
-            {
-                y_min = y_P2;
-            }
-            else
-            {
-                y_min = y_P1;
-            }
+            y_min = y_P1;
+        }
+        if (y_P2 < y_P1)
+        {
+            y_min = y_P2;
         }
 
         if (x_P1 < x_min)
         {
-            if (x_P2 < x_P1)
-            {
-                x_min = x_P2;
-            }
-            else
-            {
-                x_min = x_P1;
-            }
+            x_min = x_P1;
+        }
+        if (x_P2 < x_P1)
+        {
+            x_min = x_P2;
         }
 
         if (y_P1 > y_max)
         {
-            if (y_P2 > y_P1)
-            {
-                y_max = y_P2;
-            }
-            else
-            {
-                y_max = y_P1;
-            }
+            y_max = y_P1;
+        }
+        if (y_P2 > y_P1)
+        {
+            y_max = y_P2;
         }
 
         if (x_P1 > x_max)
         {
-            if (y_P2 > y_P1)
-            {
-                x_max = x_P2;
-            }
-            else
-            {
-                x_max = x_P1;
-            }
+            x_max = x_P1;
+        }
+        if (y_P2 > y_P1)
+        {
+            y_max = y_P2;
         }
     }
 
@@ -131,7 +119,17 @@ EasyImage Functies::draw2DLines(const Lines2D &lines, const int size)
     EasyImage image(lround(Image_x),lround(Image_y));
 
 
-    Color color(1.0 * 255, 0.215 * 255, 0.554 * 255);
+    Color color(0, 0, 0);
+
+    for (unsigned int i = 0; i < Image_y; i++)
+    {
+        for (unsigned int j = 0; j < Image_x; j++)
+        {
+            image(i, j).red = 255;
+            image(i, j).green = 255;
+            image(i, j).blue = 255;
+        }
+    }
 
     for (int i = 0; i < new_lines.size(); i++)
     {
@@ -147,33 +145,44 @@ EasyImage Functies::draw2DLines(const Lines2D &lines, const int size)
 
 Lines2D Functies::drawLSystem(const LSystem2D &l_system)
 {
-    Lines2D lines2D;
-    Point2D point2D(0,0);
+    Lines2D lines; // De uiteindelijke resultaat
 
-    LSystem2D new_lsystem;
+    double pi = 3.14159265358979323846;
 
-    ifstream input_stream("32_segment_curve.L2D");
-    input_stream >> new_lsystem;
-    input_stream.close();
+    // DE COMPONENTEN
+    set<char> alfabet = l_system.get_alphabet();
+    string replacement = l_system.get_replacement(*alfabet.begin());
+    string initiator = l_system.get_initiator();
+    unsigned int iterations = l_system.get_nr_iterations();
+    double starting_angle = l_system.get_starting_angle();
+    double angle = l_system.get_angle();
 
-    set<char> alfabet = new_lsystem.get_alphabet();
-    string replacement = new_lsystem.get_replacement(*alfabet.begin());
+    starting_angle *= (pi/180);
+    angle *= (pi/180);
 
+    double x = 0;
+    double y = 0;
 
-
-
-
-
-    Colour colors(1.0,0.0,0.0);
-    Point2D point1(3,6);
-    Point2D point2(6,9);
-    Point2D point3(9,6);
-    Point2D point4(6,3);
-    Line2D line1(point1,point2,colors);
-    Line2D line2(point2,point3,colors);
-    Line2D line3(point3,point4,colors);
-    Line2D line4(point4,point1,colors);
-    Lines2D lines = {line1, line2, line3, line4};
-
+    for (char i : initiator)
+    {
+        if (i == '-')
+        {
+            starting_angle -= angle;
+        }
+        else if (i == '+')
+        {
+            starting_angle += angle;
+        }
+        else if (i == *initiator.begin())
+        {
+            Point2D point1(x,y);
+            x += cos(starting_angle);
+            y += sin(starting_angle);
+            Point2D point2(x,y);
+            Colour color(0,0,0);
+            Line2D line(point1,point2,color);
+            lines.push_back(line);
+        }
+    }
     return lines;
 }
