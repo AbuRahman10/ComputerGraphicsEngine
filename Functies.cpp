@@ -172,7 +172,40 @@ Lines2D Functies::drawLSystem(const LSystem2D &l_system)
     double x = 0;
     double y = 0;
 
+    tekenReplace(initiator,starting_angle,angle,lines,x,y,replacements, iterations);
 
+    return lines;
+}
+
+void Functies::leesString(double starting_angle, double angle, Lines2D &lines, double x, double y, pair<char,string> let)
+{
+    for (char k : let.second)
+    {
+        if (k == '-')
+        {
+            starting_angle -= angle;
+        }
+        else if (k == '+')
+        {
+            starting_angle += angle;
+        }
+        else
+        {
+            Point2D point1(x,y);
+            double cosa = cos(starting_angle);
+            double sina = sin(starting_angle);
+            x += cosa;
+            y += sina;
+            Point2D point2(x,y);
+            Colour color(0,0,0);
+            Line2D line(point1,point2,color);
+            lines.push_back(line);
+        }
+    }
+}
+
+void Functies::tekenReplace(string initiator, double starting_angle, double angle, Lines2D &lines, double x, double y, vector<pair<char,string>> replacements, unsigned int iterations)
+{
     for (char i : initiator)
     {
         if (i == '-')
@@ -189,32 +222,9 @@ Lines2D Functies::drawLSystem(const LSystem2D &l_system)
             {
                 if (let.first == i)
                 {
-                    for (char k : let.second)
-                    {
-                        if (k == '-')
-                        {
-                            starting_angle -= angle;
-                        }
-                        else if (k == '+')
-                        {
-                            starting_angle += angle;
-                        }
-                        else
-                        {
-                            Point2D point1(x,y);
-                            double cosa = cos(starting_angle);
-                            double sina = sin(starting_angle);
-                            x += cosa;
-                            y += sina;
-                            Point2D point2(x,y);
-                            Colour color(0,0,0);
-                            Line2D line(point1,point2,color);
-                            lines.push_back(line);
-                        }
-                    }
+                    leesString(starting_angle,angle,lines,x,y,let);
                 }
             }
         }
     }
-    return lines;
 }
