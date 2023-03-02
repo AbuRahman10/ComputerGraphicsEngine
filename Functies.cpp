@@ -226,91 +226,40 @@ void Functies::tekenReplace(string initiator, double starting_angle, double angl
                 {
                     leesString(starting_angle,angle,lines,x,y,let);
                     string rep_rule = let.second;
-                    leesStringRecursie(rep_rule,starting_angle,angle,lines,x,y,let);
+                    leesStringIteration(rep_rule,starting_angle,angle,lines,x,y,let);
                 }
             }
         }
     }
 }
 
-void Functies::leesStringRecursie(string rep_rule, double starting_angle, double angle, Lines2D &lines, double x, double y, pair<char, string> let)
+void Functies::leesStringIteration(string rep_rule, double starting_angle, double angle, Lines2D &lines, double x, double y, pair<char, string> let)
 {
     vector<string> rules;
 
-    for (int i = 0; i < 5; i++)
+    for (int i = 0; i < 4; i++)
     {
         string leeg;
         rules.push_back(leeg);
     }
 
-    for (char karakter : rep_rule)
-    {
-        if (karakter == let.first)
-        {
-            rules[0] += rep_rule;
-        }
-        else
-        {
-            rules[0] += karakter;
-        }
-    }
-    pair<char,string> letters(let.first,rules[0]);
-    leesString(starting_angle,angle,lines,x,y,letters);
+    rules[0] = rep_rule;
 
-    for (char karakter : rules[0])
+    for (int i = 0; i < 3; i++)
     {
-        if (karakter == let.first)
+        for (char karakter : rules[i])
         {
-            rules[1] += rep_rule;
+            if (karakter == let.first)
+            {
+                rules[i+1] += rep_rule;
+            }
+            else
+            {
+                rules[i+1] += karakter;
+            }
         }
-        else
-        {
-            rules[1] += karakter;
-        }
+        pair<char,string> letters1(let.first,rules[i+1]);
+        leesString(starting_angle,angle,lines,x,y,letters1);
     }
-    pair<char,string> letters1(let.first,rules[1]);
-    leesString(starting_angle,angle,lines,x,y,letters1);
-
-    for (char karakter : rules[2])
-    {
-        if (karakter == let.first)
-        {
-            rules[2] += rep_rule;
-        }
-        else
-        {
-            rules[2] += karakter;
-        }
-    }
-    pair<char,string> letters2(let.first,rules[2]);
-    leesString(starting_angle,angle,lines,x,y,letters2);
-
-    for (char karakter : rules[3])
-    {
-        if (karakter == let.first)
-        {
-            rules[3] += rep_rule;
-        }
-        else
-        {
-            rules[3] += karakter;
-        }
-    }
-    pair<char,string> letters3(let.first,rules[3]);
-    leesString(starting_angle,angle,lines,x,y,letters3);
-
-    for (char karakter : rules[4])
-    {
-        if (karakter == let.first)
-        {
-            rules[4] += rep_rule;
-        }
-        else
-        {
-            rules[4] += karakter;
-        }
-    }
-    pair<char,string> letters4(let.first,rules[4]);
-    leesString(starting_angle,angle,lines,x,y,letters4);
 }
 

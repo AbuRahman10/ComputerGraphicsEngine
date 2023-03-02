@@ -173,7 +173,7 @@ img::EasyImage generate_image(const ini::Configuration &configuration)
 
     if (type == "2DLSystem")
     {
-        if (input_file == "32_segment_curve.L2D")
+        if (input_file == "32_segment_curve.L2D" or input_file == "square.L2D")
         {
             LSystem2D l_system;
 
