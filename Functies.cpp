@@ -24,60 +24,51 @@ EasyImage Functies::draw2DLines(const Lines2D &lines, const int size)
 {
     // x.min; x.max; y.min; y.max;
 
-    double x_min = lines[0].p1.x;
-    double y_min = lines[0].p1.y;
+    double Xmin = lines[0].p1.x;
+    double Ymin = lines[0].p1.y;
 
-    double x_max = lines[0].p1.x;
-    double y_max = lines[0].p1.y;
+    double Xmax = lines[0].p1.x;
+    double Ymax = lines[0].p1.y;
 
-    for (int i = 0; i < lines.size(); i++)
+    for(const Line2D i : lines)
     {
-        double x_P1 = lines[i].p1.x;
-        double x_P2 = lines[i].p2.x;
-
-        double y_P1 = lines[i].p1.y;
-        double y_P2 = lines[i].p2.y;
-
-        if (y_P1 < y_min)
+        if(i.p1.x < Xmin)
         {
-            y_min = y_P1;
+            Xmin = i.p1.x;
         }
-        if (y_P2 < y_min)
+        if(i.p2.x < Xmin)
         {
-            y_min = y_P2;
+            Xmin = i.p2.x;
         }
-
-        if (x_P1 < x_min)
+        if(i.p1.y < Ymin)
         {
-            x_min = x_P1;
+            Ymin = i.p1.y;
         }
-        if (x_P2 < y_min)
+        if(i.p2.y < Ymin)
         {
-            x_min = x_P2;
+            Ymin = i.p2.y;
         }
-
-        if (y_P1 > y_max)
+        if(i.p1.x > Xmax)
         {
-            y_max = y_P1;
+            Xmax = i.p1.x;
         }
-        if (y_P2 > y_max)
+        if(i.p2.x > Xmax)
         {
-            y_max = y_P2;
+            Xmax = i.p2.x;
         }
-
-        if (x_P1 > x_max)
+        if(i.p1.y > Ymax)
         {
-            x_max = x_P1;
+            Ymax = i.p1.y;
         }
-        if (y_P2 > y_max)
+        if(i.p2.y > Ymax)
         {
-            y_max = y_P2;
+            Ymax = i.p2.y;
         }
     }
 
     // GROOTTE VAN DE IMAGE
-    double x_range = x_max - x_min;
-    double y_range = y_max - y_min;
+    double x_range = Xmax - Xmin;
+    double y_range = Ymax - Ymin;
 
     double max1 = max(x_range,y_range);
 
@@ -101,8 +92,8 @@ EasyImage Functies::draw2DLines(const Lines2D &lines, const int size)
 
     // LIJNTEKENING VERSCHUIVEN
 
-    double DC_x = d * ((x_min + x_max) / 2);
-    double DC_y = d * ((y_min + y_max) / 2);
+    double DC_x = d * ((Xmin + Xmax) / 2);
+    double DC_y = d * ((Ymin + Ymax) / 2);
 
     double d_x = (Image_x / 2) - DC_x;
     double d_y = (Image_y / 2) - DC_y;
@@ -173,13 +164,45 @@ Lines2D Functies::drawLSystem(const LSystem2D &l_system)
     double y = 0;
 
     tekenReplace(initiator,starting_angle,angle,lines,x,y,replacements, iterations);
+    leesString(starting_angle,angle,lines,x,y,initiator);
 
     return lines;
 }
 
-void Functies::leesString(double starting_angle, double angle, Lines2D &lines, double x, double y, pair<char,string> let)
+void Functies::tekenReplace(string &initiator, double starting_angle, double angle, Lines2D &lines, double x, double y, vector<pair<char,string>> replacements, unsigned int iterations)
 {
-    for (char k : let.second)
+
+    for (int it = 0; it < iterations; it++)
+    {
+        string nieuw_initiator;
+        for (char i : initiator)
+        {
+            if (i == '+')
+            {
+                nieuw_initiator += i;
+            }
+            else if (i == '-')
+            {
+                nieuw_initiator += i;
+            }
+            else
+            {
+                for (pair<char,string> alfabet : replacements)
+                {
+                    if (alfabet.first == i)
+                    {
+                        nieuw_initiator += alfabet.second;
+                    }
+                }
+            }
+        }
+        initiator = nieuw_initiator;
+    }
+}
+
+void Functies::leesString(double starting_angle, double angle, Lines2D &lines, double &x, double &y, string string1)
+{
+    for (char k : string1)
     {
         if (k == '-')
         {
@@ -203,63 +226,3 @@ void Functies::leesString(double starting_angle, double angle, Lines2D &lines, d
         }
     }
 }
-
-void Functies::tekenReplace(string initiator, double starting_angle, double angle, Lines2D &lines, double x, double y, vector<pair<char,string>> replacements, unsigned int iterations)
-{
-    for (char i : initiator)
-    {
-        if (i == '-')
-        {
-            starting_angle -= angle;
-        }
-        else if (i == '+')
-        {
-            starting_angle += angle;
-        }
-        else
-        {
-
-            for (pair<char,string> let : replacements)
-            {
-
-                if (let.first == i)
-                {
-                    leesString(starting_angle,angle,lines,x,y,let);
-                    string rep_rule = let.second;
-                    leesStringIteration(rep_rule,starting_angle,angle,lines,x,y,let);
-                }
-            }
-        }
-    }
-}
-
-void Functies::leesStringIteration(string rep_rule, double starting_angle, double angle, Lines2D &lines, double x, double y, pair<char, string> let)
-{
-    vector<string> rules;
-
-    for (int i = 0; i < 4; i++)
-    {
-        string leeg;
-        rules.push_back(leeg);
-    }
-
-    rules[0] = rep_rule;
-
-    for (int i = 0; i < 3; i++)
-    {
-        for (char karakter : rules[i])
-        {
-            if (karakter == let.first)
-            {
-                rules[i+1] += rep_rule;
-            }
-            else
-            {
-                rules[i+1] += karakter;
-            }
-        }
-        pair<char,string> letters1(let.first,rules[i+1]);
-        leesString(starting_angle,angle,lines,x,y,letters1);
-    }
-}
-

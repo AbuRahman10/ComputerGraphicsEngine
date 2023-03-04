@@ -173,23 +173,15 @@ img::EasyImage generate_image(const ini::Configuration &configuration)
 
     if (type == "2DLSystem")
     {
-        if (input_file == "32_segment_curve.L2D" or input_file == "square.L2D")
-        {
-            LSystem2D l_system;
+        LSystem2D l_system;
 
-            ifstream input_stream(input_file);
-            input_stream >> l_system;
-            input_stream.close();
+        ifstream input_stream(input_file);
+        input_stream >> l_system;
+        input_stream.close();
 
-            Lines2D lines2D = Functies::drawLSystem(l_system);
+        Lines2D lines2D = Functies::drawLSystem(l_system);
 
-            return Functies::draw2DLines(lines2D, 1000);
-        }
-        else
-        {
-            EasyImage image(500,500);
-            return image;
-        }
+        return Functies::draw2DLines(lines2D, 1000);
     }
     else
     {

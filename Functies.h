@@ -26,12 +26,9 @@ public:
 
     static Lines2D drawLSystem(const LSystem2D &l_system);
 
-    static void leesString(double starting_angle, double angle, Lines2D &lines, double x, double y, pair<char,string> let);
+    static void leesString(double starting_angle, double angle, Lines2D &lines, double &x, double &y, string string1);
 
-    static void tekenReplace(string initiator, double starting_angle, double angle, Lines2D &lines, double x, double y, vector<pair<char,string>> replacements, unsigned int iterations);
-
-    static void leesStringIteration(string rep_rule,double starting_angle, double angle, Lines2D &lines, double x, double y, pair<char,string> let);
-
+    static void tekenReplace(string &initiator, double starting_angle, double angle, Lines2D &lines, double x, double y, vector<pair<char,string>> replacements, unsigned int iterations);
 };
 
 #endif //ENGINE_FUNCTIES_H
