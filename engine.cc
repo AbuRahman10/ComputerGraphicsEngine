@@ -170,6 +170,9 @@ img::EasyImage generate_image(const ini::Configuration &configuration)
 {
     string type = configuration["General"]["type"].as_string_or_die();
     string input_file = configuration["2DLSystem"]["inputfile"].as_string_or_die();
+    int size = configuration["General"]["size"].as_int_or_die();
+    vector<double> colors = configuration["2DLSystem"]["color"].as_double_tuple_or_die();
+    vector<double> backgroundColors = configuration["General"]["backgroundcolor"].as_double_tuple_or_die();
 
     if (type == "2DLSystem")
     {
@@ -181,7 +184,7 @@ img::EasyImage generate_image(const ini::Configuration &configuration)
 
         Lines2D lines2D = Functies::drawLSystem(l_system);
 
-        return Functies::draw2DLines(lines2D, 1000);
+        return Functies::draw2DLines(lines2D, size, colors, backgroundColors);
     }
     else
     {

@@ -22,7 +22,7 @@ class Functies
 {
 public:
 
-    static EasyImage draw2DLines(const Lines2D &lines, const int size);
+    static EasyImage draw2DLines(const Lines2D &lines, const int size, vector<double> lineColor, vector<double> backgroundColor);
 
     static Lines2D drawLSystem(const LSystem2D &l_system);
 

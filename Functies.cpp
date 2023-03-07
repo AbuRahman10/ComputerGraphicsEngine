@@ -20,7 +20,7 @@ using namespace std;
 using namespace img;
 using namespace LParser;
 
-EasyImage Functies::draw2DLines(const Lines2D &lines, const int size)
+EasyImage Functies::draw2DLines(const Lines2D &lines, const int size, vector<double> lineColor, vector<double> backgroundColor)
 {
     // x.min; x.max; y.min; y.max;
 
@@ -81,6 +81,9 @@ EasyImage Functies::draw2DLines(const Lines2D &lines, const int size)
     double d = 0.95 * (Image_x/ x_range); // schaalfactor d;
 
     Lines2D new_lines = lines;
+
+    int size_newLine = new_lines.size();
+
     for (int i = 0; i < lines.size(); i++)
     {
         new_lines[i].p1.x *= d;
@@ -110,18 +113,19 @@ EasyImage Functies::draw2DLines(const Lines2D &lines, const int size)
     EasyImage image(lround(Image_x),lround(Image_y));
 
 
-    Color color(0, 0, 0);
 
-    for (unsigned int i = 0; i < Image_y; i++)
+
+    for (unsigned int i = 0; i < lround(Image_y); i++)
     {
-        for (unsigned int j = 0; j < Image_x; j++)
+        for (unsigned int j = 0; j < ::lround(Image_x); j++)
         {
-            image(i, j).red = 255;
-            image(i, j).green = 255;
-            image(i, j).blue = 255;
+            image(j, i).red = lround(backgroundColor[0] * 255);
+            image(j, i).green = lround(backgroundColor[1] * 255);
+            image(j, i).blue = lround(backgroundColor[2] * 255);
         }
     }
 
+    Color color(lround(lineColor[0]*255), lround(lineColor[1]*255), lround(lineColor[2]*255));
     for (int i = 0; i < new_lines.size(); i++)
     {
         double xP1 = lround(new_lines[i].p1.x);
