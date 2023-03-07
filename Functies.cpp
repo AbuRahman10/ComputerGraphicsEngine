@@ -15,6 +15,7 @@
 #include "Line2D.h"
 #include "Point2D.h"
 #include "Colour.h"
+#include "stack"
 
 using namespace std;
 using namespace img;
@@ -186,6 +187,14 @@ void Functies::tekenReplace(string &initiator, double starting_angle, double ang
             {
                 nieuw_initiator += i;
             }
+            else if (i == '(')
+            {
+                nieuw_initiator += i;
+            }
+            else if (i == ')')
+            {
+                nieuw_initiator += i;
+            }
             else
             {
                 for (pair<char,string> alfabet : replacements)
@@ -203,6 +212,8 @@ void Functies::tekenReplace(string &initiator, double starting_angle, double ang
 
 void Functies::leesString(double starting_angle, double angle, Lines2D &lines, double &x, double &y, string string1)
 {
+    stack<pair<pair<double,double>,double>> myStack;
+
     for (char k : string1)
     {
         if (k == '-')
@@ -212,6 +223,24 @@ void Functies::leesString(double starting_angle, double angle, Lines2D &lines, d
         else if (k == '+')
         {
             starting_angle += angle;
+        }
+        else if (k == '(')
+        {
+            pair<double,double> position(x,y);
+            pair<pair<double,double>,double> pos_EN_hoek(position,starting_angle);
+
+            myStack.push(pos_EN_hoek);
+        }
+        else if (k == ')')
+        {
+            pair<pair<double,double>,double> pos_EN_hoek = myStack.top();
+
+            x = pos_EN_hoek.first.first;
+            y = pos_EN_hoek.first.second;
+
+            starting_angle = pos_EN_hoek.second;
+
+            myStack.pop();
         }
         else
         {
