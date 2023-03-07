@@ -112,9 +112,6 @@ EasyImage Functies::draw2DLines(const Lines2D &lines, const int size, vector<dou
 
     EasyImage image(lround(Image_x),lround(Image_y));
 
-
-
-
     for (unsigned int i = 0; i < lround(Image_y); i++)
     {
         for (unsigned int j = 0; j < ::lround(Image_x); j++)
