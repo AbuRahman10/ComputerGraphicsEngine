@@ -256,3 +256,138 @@ void Functies::leesString(double starting_angle, double angle, Lines2D &lines, d
         }
     }
 }
+
+Matrix Functies::scaleFigure(const double scale)
+{
+    Matrix matrix;
+
+    matrix(1,1) = scale;
+    matrix(2,2) = scale;
+    matrix(3,3) = scale;
+
+    return matrix;
+}
+
+Matrix Functies::rotateX(const double angle)
+{
+    Matrix matrix;
+
+    matrix(2,2) = cos(angle);
+    matrix(3,3) = cos(angle);
+    matrix(3,2) = -1 * sin(angle);
+    matrix(2,3) = sin(angle);
+
+    return matrix;
+}
+
+Matrix Functies::rotateY(const double angle)
+{
+    Matrix matrix;
+
+    matrix(1,1) = cos(angle);
+    matrix(3,3) = cos(angle);
+    matrix(3,1) = sin(angle);
+    matrix(1,3) = -1 * sin(angle);
+
+    return matrix;
+}
+
+Matrix Functies::rotateZ(const double angle)
+{
+    Matrix matrix;
+
+    matrix(1,1) = cos(angle);
+    matrix(2,2) = cos(angle);
+    matrix(2,1) = -1 * sin(angle);
+    matrix(1,2) = sin(angle);
+
+    return matrix;
+}
+
+Matrix Functies::translate(const Vector3D &vector3D)
+{
+    Matrix matrix;
+
+    matrix(4,1) = vector3D.x;
+    matrix(4,2) = vector3D.y;
+    matrix(4,3) = vector3D.z;
+
+    return matrix;
+}
+
+void Functies::applyTransformation(Figure &figure, const Matrix &matrix)
+{
+    for (Vector3D i : figure.points)
+    {
+        i *= matrix;
+    }
+}
+
+Matrix Functies::eyePointTrans(const Vector3D &eyepoint)
+{
+    double r = 0;
+    double theta = 0;
+    double phi = 0;
+
+    toPolar(eyepoint,theta,phi,r);
+
+    Matrix matrix;
+
+    matrix(1,1) = -1 * sin(theta);
+    matrix(1,2) = (-1 * cos(theta)) * cos(phi);
+    matrix(1,3) = cos(theta) * sin(phi);
+
+    matrix(2,1) = cos(theta);
+    matrix(2,2) = (-1 * sin(theta)) * cos(phi);
+    matrix(2,3) = sin(theta) * sin(phi);
+
+    matrix(3,2) = sin(phi);
+    matrix(3,3) = cos(phi);
+
+    matrix(4,3) = -1 * r;
+
+    return matrix;
+}
+
+void Functies::toPolar(const Vector3D &point, double &theta, double &phi, double &r)
+{
+    r = sqrt(pow(point.x,2)+pow(point.y,2)+pow(point.z,2));
+    phi = atan2(point.y,point.x);
+    theta = acos(point.z/r);
+}
+
+void Functies::applyTransformation(Figures3D &figure, const Matrix &matrix)
+{
+    for (Figure i : figure)
+    {
+        applyTransformation(i,matrix);
+    }
+}
+
+Lines2D Functies::doProjection(const Figures3D &figures3D)
+{
+    Lines2D lines2D;
+
+    for (int i = 0; i < figures3D.size(); i++)
+    {
+        for (Face face : figures3D[i].faces)
+        {
+            Colour colour(1,0,0);
+            Point2D p1 = doProjection(figures3D[i].points[face.point_indexes[0]],1);
+            Point2D p2 = doProjection(figures3D[i].points[face.point_indexes[1]],1);
+            Line2D line2D(p1,p2,colour);
+            lines2D.push_back(line2D);
+        }
+    }
+
+    return lines2D;
+}
+
+Point2D Functies::doProjection(const Vector3D &point, const double d)
+{
+    double x = d * point.x / (-1 * point.z);
+    double y = d * point.y / (-1 * point.z);
+
+    Point2D point2D(x,y);
+    return point2D;
+}

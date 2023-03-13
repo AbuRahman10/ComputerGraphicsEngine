@@ -9,14 +9,20 @@
 #include "vector"
 #include "Point2D.h"
 #include "Colour.h"
+#include "vector3d.h"
+#include "Face.h"
 
 using namespace std;
 
 class Figure
 {
-    vector<Point2D> points;
+public:
+    vector<Vector3D> points;
+    vector<Face> faces;
     Colour color;
 };
+
+typedef vector<Figure> Figures3D;
 
 
 #endif //ENGINE_FIGURE_H

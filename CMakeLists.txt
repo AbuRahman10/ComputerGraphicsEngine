@@ -27,7 +27,13 @@ set(engine_sources
 	Functies.cpp
 	Functies.h
 	l_parser.cc
-	l_parser.h Figure.cpp Figure.h)
+	l_parser.h
+	Figure.cpp
+	Figure.h
+	vector3d.cc
+	vector3d.h
+	Face.cpp
+	Face.h)
 
 ############################################################
 # Create an executable

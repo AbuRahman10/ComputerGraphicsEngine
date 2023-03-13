@@ -13,6 +13,7 @@ public:
     double y;
 
     Point2D(double x, double y);
+
 };
 
 
