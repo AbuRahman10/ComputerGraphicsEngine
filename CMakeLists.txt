@@ -27,7 +27,7 @@ set(engine_sources
 	Functies.cpp
 	Functies.h
 	l_parser.cc
-	l_parser.h)
+	l_parser.h Figure.cpp Figure.h)
 
 ############################################################
 # Create an executable
