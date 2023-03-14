@@ -391,3 +391,8 @@ Point2D Functies::doProjection(const Vector3D &point, const double d)
     Point2D point2D(x,y);
     return point2D;
 }
+
+void Functies::voeg_toe(vector<Face> &faces, vector<Vector3D>, Colour colour)
+{
+
+}

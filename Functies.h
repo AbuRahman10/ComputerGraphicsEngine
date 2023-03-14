@@ -56,6 +56,8 @@ public:
     static Lines2D doProjection(const Figures3D &figures3D);
 
     static Point2D doProjection(const Vector3D &point, const double d);
+
+    static void voeg_toe(vector<Face> &faces, vector<Vector3D>, Colour colour);
 };
 
 #endif //ENGINE_FUNCTIES_H

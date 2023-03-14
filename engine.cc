@@ -6,9 +6,8 @@
 #include <string>
 
 #include "Line2D.h"
-#include "Point2D.h"
-#include "Colour.h"
 #include "Functies.h"
+#include "Figure.h"
 
 #include "l_parser.h"
 #include <fstream>
@@ -174,6 +173,17 @@ img::EasyImage generate_image(const ini::Configuration &configuration)
     vector<double> colors = configuration["2DLSystem"]["color"].as_double_tuple_or_die();
     vector<double> backgroundColors = configuration["General"]["backgroundcolor"].as_double_tuple_or_die();
 
+    int nrPoints = configuration["figure0"]["nrPoints"].as_int_or_die();
+    vector<Vector3D> points;
+
+    string point = "point";
+    for (int i = 0; i < points.size(); i++)
+    {
+        point += to_string(i);
+        points.push_back(Vector3D::point(configuration["Figure0"][point]))
+    }
+
+
     if (type == "2DLSystem")
     {
         LSystem2D l_system;
@@ -186,10 +196,17 @@ img::EasyImage generate_image(const ini::Configuration &configuration)
 
         return Functies::draw2DLines(lines2D, size, colors, backgroundColors);
     }
-    else
+    else if (type == "Wireframe")
     {
-        EasyImage image;
-        return image;
+        Figures3D figures3D;
+
+        for (Figure i : figures3D)
+        {
+            Functies::voeg_toe(i.faces,i.points,i.color);
+        }
+
+        Lines2D lines2D = Functies::doProjection(figures3D);
+        return Functies::draw2DLines(lines2D, size, colors, backgroundColors);
     }
 }
 
