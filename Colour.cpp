@@ -5,3 +5,5 @@
 #include "Colour.h"
 
 Colour::Colour(double red, double green, double blue) : red(red), green(green), blue(blue) {}
+
+Colour::Colour() {}

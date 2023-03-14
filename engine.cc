@@ -168,45 +168,40 @@ EasyImage diamond(unsigned int Wi, unsigned int Hi, int N, vector<double> backgr
 img::EasyImage generate_image(const ini::Configuration &configuration)
 {
     string type = configuration["General"]["type"].as_string_or_die();
-    string input_file = configuration["2DLSystem"]["inputfile"].as_string_or_die();
+    //string input_file = configuration["2DLSystem"]["inputfile"].as_string_or_die();
     int size = configuration["General"]["size"].as_int_or_die();
-    vector<double> colors = configuration["2DLSystem"]["color"].as_double_tuple_or_die();
+    vector<double> colors = configuration["Figure0"]["color"].as_double_tuple_or_die();
     vector<double> backgroundColors = configuration["General"]["backgroundcolor"].as_double_tuple_or_die();
 
-    int nrPoints = configuration["figure0"]["nrPoints"].as_int_or_die();
-    vector<Vector3D> points;
-
-    string point = "point";
-    for (int i = 0; i < points.size(); i++)
-    {
-        point += to_string(i);
-        points.push_back(Vector3D::point(configuration["Figure0"][point]))
-    }
-
+    Colour colour(colors[0],colors[1],colors[2]);
 
     if (type == "2DLSystem")
     {
         LSystem2D l_system;
 
-        ifstream input_stream(input_file);
+        ifstream input_stream("input_file");
         input_stream >> l_system;
         input_stream.close();
 
         Lines2D lines2D = Functies::drawLSystem(l_system);
-
         return Functies::draw2DLines(lines2D, size, colors, backgroundColors);
     }
     else if (type == "Wireframe")
     {
+        int nrFigures = configuration["General"]["nrFigures"].as_int_or_die();
         Figures3D figures3D;
-
-        for (Figure i : figures3D)
+        for (int i = 0; i < nrFigures; i++)
         {
-            Functies::voeg_toe(i.faces,i.points,i.color);
+            figures3D.push_back(Figure());
         }
-
-        Lines2D lines2D = Functies::doProjection(figures3D);
+        Functies::pasFigure(figures3D,configuration,colour);
+        Lines2D lines2D = Functies::omzetDimensie_3D_2D(figures3D,configuration);
         return Functies::draw2DLines(lines2D, size, colors, backgroundColors);
+    }
+    else
+    {
+        EasyImage image(500,500);
+        return image;
     }
 }
 

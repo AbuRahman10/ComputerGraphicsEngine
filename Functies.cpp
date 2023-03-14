@@ -358,7 +358,7 @@ void Functies::toPolar(const Vector3D &point, double &theta, double &phi, double
 
 void Functies::applyTransformation(Figures3D &figure, const Matrix &matrix)
 {
-    for (Figure i : figure)
+    for (Figure &i : figure)
     {
         applyTransformation(i,matrix);
     }
@@ -392,7 +392,63 @@ Point2D Functies::doProjection(const Vector3D &point, const double d)
     return point2D;
 }
 
-void Functies::voeg_toe(vector<Face> &faces, vector<Vector3D>, Colour colour)
+void Functies::pasFigure(Figures3D &figures3D, const Configuration &configuration, Colour colour)
 {
+    int nrPoints = configuration["Figure0"]["nrPoints"].as_int_or_die();
+    int nrLines = configuration["Figure0"]["nrLines"].as_int_or_die();
 
+    vector<Vector3D> points;
+    string point = "point";
+    for (int i = 0; i < nrPoints; i++)
+    {
+        point += to_string(i);
+        vector<double> pts = configuration["Figure0"][point].as_double_tuple_or_die();
+        points.push_back(Vector3D::point(pts[0],pts[1],pts[2]));
+        point = "point";
+    }
+
+    vector<Face> pts_collection;
+    string line = "line";
+    for (int i = 0; i < nrLines; i++)
+    {
+        line += to_string(i);
+        vector<int> point_indexes = configuration["Figure0"][line].as_int_tuple_or_die();
+        Face face;
+        face.point_indexes = point_indexes;
+        pts_collection.push_back(face);
+        line = "line";
+    }
+
+    for (Figure &i : figures3D)
+    {
+        i.faces = pts_collection;
+        i.points = points;
+        i.color = colour;
+    }
+}
+
+Lines2D Functies::omzetDimensie_3D_2D(Figures3D &figures3D, const Configuration &configuration)
+{
+    // 1) MATRIX OPSTELLEN
+
+    vector<double> center = configuration["Figure0"]["center"].as_double_tuple_or_die();
+
+    Matrix S,M,T;
+
+    S = scaleFigure(1);
+    M = rotateX(0) * rotateZ(0);
+    T = translate(Vector3D::point(center[0],center[1],center[2]));
+
+    Matrix V = S * M * T;
+
+    vector<double> eyePoint = configuration["General"]["eye"].as_double_tuple_or_die();
+    eyePointTrans(Vector3D::point(eyePoint[0],eyePoint[1],eyePoint[2]));
+
+    // 2) EYE_COORDINATEN
+
+    applyTransformation(figures3D,V);
+
+    // 3) 2D Lijntekening
+
+    return doProjection(figures3D);
 }

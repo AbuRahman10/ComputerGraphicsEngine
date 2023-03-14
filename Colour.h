@@ -16,6 +16,7 @@ public:
 
     Colour(double red, double green, double blue);
 
+    Colour();
 };
 
 

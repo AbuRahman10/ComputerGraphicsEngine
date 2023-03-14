@@ -57,7 +57,9 @@ public:
 
     static Point2D doProjection(const Vector3D &point, const double d);
 
-    static void voeg_toe(vector<Face> &faces, vector<Vector3D>, Colour colour);
+    static void pasFigure(Figures3D &figures3D, const Configuration &configuration, Colour colour);
+
+    static Lines2D omzetDimensie_3D_2D(Figures3D &figures3D, const Configuration &configuration);
 };
 
 #endif //ENGINE_FUNCTIES_H
