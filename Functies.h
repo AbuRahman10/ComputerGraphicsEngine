@@ -57,9 +57,7 @@ public:
 
     static Point2D doProjection(const Vector3D &point, const double d);
 
-    static void pasFigure(Figures3D &figures3D, const Configuration &configuration, Colour colour);
-
-    static Lines2D omzetDimensie_3D_2D(Figures3D &figures3D, const Configuration &configuration);
+    static Lines2D pasFigure(Figures3D &figures3D, const Configuration &configuration, Colour colour);
 };
 
 #endif //ENGINE_FUNCTIES_H

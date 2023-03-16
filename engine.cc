@@ -188,14 +188,10 @@ img::EasyImage generate_image(const ini::Configuration &configuration)
     }
     else if (type == "Wireframe")
     {
-        int nrFigures = configuration["General"]["nrFigures"].as_int_or_die();
         Figures3D figures3D;
-        for (int i = 0; i < nrFigures; i++)
-        {
-            figures3D.push_back(Figure());
-        }
-        Functies::pasFigure(figures3D,configuration,colour);
-        Lines2D lines2D = Functies::omzetDimensie_3D_2D(figures3D,configuration);
+        // INLEZEN VAN DE INI FILE
+        Lines2D lines2D = Functies::pasFigure(figures3D,configuration,colour);
+        // TEKENEN VAN DE 2D LIJNEN
         return Functies::draw2DLines(lines2D, size, colors, backgroundColors);
     }
     else
