@@ -11,9 +11,9 @@ X: Niet werkend of niet geïmplementeerd
 | 1 | 2D L-systemen             | V |
 |   | Met haakjes               | V |
 |   | Stochastisch              | X |
-| 2 | Transformaties            | X |
-|   | Eye-point                 | X |
-|   | Projectie                 | X |
+| 2 | Transformaties            | V |
+|   | Eye-point                 | V |
+|   | Projectie                 | V |
 | 3 | Platonische Lichamen      | X |
 |   | Kegel en cylinder         | X |
 |   | Bol                       | X |
