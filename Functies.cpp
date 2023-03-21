@@ -22,7 +22,7 @@ using namespace std;
 using namespace img;
 using namespace LParser;
 
-EasyImage Functies::draw2DLines(const Lines2D &lines, const int size, vector<double> lineColor, vector<double> backgroundColor)
+EasyImage Functies::draw2DLines(const Lines2D &lines, const int size, vector<double> backgroundColor)
 {
     // x.min; x.max; y.min; y.max;
 
@@ -167,13 +167,13 @@ Lines2D Functies::drawLSystem(const LSystem2D &l_system)
     double x = 0;
     double y = 0;
 
-    tekenReplace(initiator,starting_angle,angle,lines,x,y,replacements, iterations);
+    tekenReplace(initiator,replacements, iterations);
     leesString(starting_angle,angle,lines,x,y,initiator);
 
     return lines;
 }
 
-void Functies::tekenReplace(string &initiator, double starting_angle, double angle, Lines2D &lines, double x, double y, vector<pair<char,string>> replacements, unsigned int iterations)
+void Functies::tekenReplace(string &initiator, vector<pair<char,string>> replacements, unsigned int iterations)
 {
 
     for (int it = 0; it < iterations; it++)

@@ -184,7 +184,7 @@ img::EasyImage generate_image(const ini::Configuration &configuration)
         input_stream.close();
 
         Lines2D lines2D = Functies::drawLSystem(l_system);
-        return Functies::draw2DLines(lines2D, size, colors, backgroundColors);
+        return Functies::draw2DLines(lines2D, size, backgroundColors);
     }
     else if (type == "Wireframe")
     {
@@ -192,7 +192,7 @@ img::EasyImage generate_image(const ini::Configuration &configuration)
         // INLEZEN VAN DE INI FILE
         Lines2D lines2D = Functies::pasFigure(figures3D,configuration,colour);
         // TEKENEN VAN DE 2D LIJNEN
-        return Functies::draw2DLines(lines2D, size, colors, backgroundColors);
+        return Functies::draw2DLines(lines2D, size, backgroundColors);
     }
     else
     {

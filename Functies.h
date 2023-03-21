@@ -25,14 +25,14 @@ class Functies
 public:
 
     //DRAW 2D LINES
-    static EasyImage draw2DLines(const Lines2D &lines, const int size, vector<double> lineColor, vector<double> backgroundColor);
+    static EasyImage draw2DLines(const Lines2D &lines, const int size, vector<double> backgroundColor);
 
     //L-SYSTEM
     static Lines2D drawLSystem(const LSystem2D &l_system);
 
     static void leesString(double starting_angle, double angle, Lines2D &lines, double &x, double &y, string string1);
 
-    static void tekenReplace(string &initiator, double starting_angle, double angle, Lines2D &lines, double x, double y, vector<pair<char,string>> replacements, unsigned int iterations);
+    static void tekenReplace(string &initiator, vector<pair<char,string>> replacements, unsigned int iterations);
 
     //DRAW 3D LINE
     static Matrix scaleFigure(const double scale);
