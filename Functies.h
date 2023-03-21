@@ -58,6 +58,10 @@ public:
     static Point2D doProjection(const Vector3D &point, const double d);
 
     static Lines2D pasFigure(Figures3D &figures3D, const Configuration &configuration, Colour colour);
+
+    // 3D LICHAMEN
+
+    static Figure createCube();
 };
 
 #endif //ENGINE_FUNCTIES_H

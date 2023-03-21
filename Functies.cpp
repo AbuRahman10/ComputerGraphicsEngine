@@ -375,13 +375,25 @@ Lines2D Functies::doProjection(const Figures3D &figures3D)
     {
         for (Face face : figure.faces)
         {
-            Point2D p1 = doProjection(figure.points[face.point_indexes[0]],1);
-            Point2D p2 = doProjection(figure.points[face.point_indexes[1]],1);
-            Line2D line2D(p1,p2,figure.color);
-            lines2D.push_back(line2D);
+            for (int ind = 0; ind < face.point_indexes.size(); ind++)
+            {
+                Point2D p1;
+                Point2D p2;
+                if (ind == face.point_indexes.size() - 1)
+                {
+                    p1 = doProjection(figure.points[face.point_indexes[ind]],1);
+                    p2 = doProjection(figure.points[face.point_indexes[0]],1);
+                }
+                else
+                {
+                    p1 = doProjection(figure.points[face.point_indexes[ind]],1);
+                    p2 = doProjection(figure.points[face.point_indexes[ind + 1]],1);
+                }
+                Line2D line2D(p1,p2,figure.color);
+                lines2D.push_back(line2D);
+            }
         }
     }
-
     return lines2D;
 }
 
@@ -397,44 +409,53 @@ Point2D Functies::doProjection(const Vector3D &point, const double d)
 Lines2D Functies::pasFigure(Figures3D &figures3D, const Configuration &configuration, Colour colour)
 {
     int nrFigures = configuration["General"]["nrFigures"].as_int_or_die();
-
     string figure = "Figure";
+
     for (int cnt = 0; cnt < nrFigures; cnt++)
     {
         Figure figure1;
+
         figure += to_string(cnt);
 
-        int nrPoints = configuration[figure]["nrPoints"].as_int_or_die();
-        int nrLines = configuration[figure]["nrLines"].as_int_or_die();
         vector<double> colors = configuration[figure]["color"].as_double_tuple_or_die();
+        string type = configuration[figure]["type"].as_string_or_die();
 
-        vector<Vector3D> points;
-        string point = "point";
-        for (int i = 0; i < nrPoints; i++)
+        if (type == "LineDrawing")
         {
-            point += to_string(i);
-            vector<double> pts = configuration[figure][point].as_double_tuple_or_die();
-            points.push_back(Vector3D::point(pts[0],pts[1],pts[2]));
-            point = "point";
+            int nrPoints = configuration[figure]["nrPoints"].as_int_or_die();
+            int nrLines = configuration[figure]["nrLines"].as_int_or_die();
+            vector<Vector3D> points;
+            vector<Face> pts_collection;
+            string point = "point";
+            for (int i = 0; i < nrPoints; i++)
+            {
+                point += to_string(i);
+                vector<double> pts = configuration[figure][point].as_double_tuple_or_die();
+                points.push_back(Vector3D::point(pts[0],pts[1],pts[2]));
+                point = "point";
+            }
+            string line = "line";
+            for (int i = 0; i < nrLines; i++)
+            {
+                line += to_string(i);
+                vector<int> point_indexes = configuration[figure][line].as_int_tuple_or_die();
+                Face face;
+                face.point_indexes = point_indexes;
+                pts_collection.push_back(face);
+                line = "line";
+            }
+
+            figure1.faces = pts_collection;
+            figure1.points = points;
+        }
+        else if (type == "Cube")
+        {
+            figure1 = createCube();
         }
 
-        vector<Face> pts_collection;
-        string line = "line";
-        for (int i = 0; i < nrLines; i++)
-        {
-            line += to_string(i);
-            vector<int> point_indexes = configuration[figure][line].as_int_tuple_or_die();
-            Face face;
-            face.point_indexes = point_indexes;
-            pts_collection.push_back(face);
-            line = "line";
-        }
-
-        figure1.faces = pts_collection;
-        figure1.points = points;
         figure1.color.red = colors[0];
         figure1.color.green = colors[1];
-        figure1.color.blue = colors[3];
+        figure1.color.blue = colors[2];
 
         // OMZETTEN VAN 3D NAAR 2D
 
@@ -471,4 +492,31 @@ Lines2D Functies::pasFigure(Figures3D &figures3D, const Configuration &configura
     // 3) 2D Lijntekening
 
     return doProjection(figures3D);
+}
+
+Figure Functies::createCube()
+{
+    Figure figure;
+    vector<vector<int>> pnt_collections = {{1,5,3,7},{5,2,8,3},{2,6,4,8},{6,1,7,4},{7,3,8,4},{1,6,2,5}};
+    Vector3D vector3D;
+    figure.points =
+    {
+            vector3D.point(1,-1,-1),
+            vector3D.point(-1,1,-1),
+            vector3D.point(1,1,1),
+            vector3D.point(-1,-1,1),
+            vector3D.point(1,1,-1),
+            vector3D.point(-1,-1,-1),
+            vector3D.point(1,-1,1),
+            vector3D.point(-1,1,1)
+    };
+
+    for (int i = 0; i < pnt_collections.size(); i++)
+    {
+        Face face;
+        face.point_indexes = pnt_collections[i];
+        figure.faces.push_back(face);
+    }
+
+    return figure;
 }

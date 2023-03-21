@@ -14,6 +14,8 @@ public:
 
     Point2D(double x, double y);
 
+    Point2D();
+
 };
 
 
