@@ -498,16 +498,16 @@ Lines2D Functies::pasFigure(Figures3D &figures3D, const Configuration &configura
 
 Figure Functies::createCube()
 {
-    Figure figure;
+    Figure kubus;
     vector<vector<int>> pnt_collections = {{0,4,2,6},{4,1,7,2},{1,5,3,7},{5,0,6,3},{6,2,7,3},{0,5,1,4}};
     for (int i = 0; i < pnt_collections.size(); i++)
     {
         Face face;
         face.point_indexes = pnt_collections[i];
-        figure.faces.push_back(face);
+        kubus.faces.push_back(face);
     }
     Vector3D vector3D;
-    figure.points =
+    kubus.points =
     {
             vector3D.point(1,-1,-1),
             vector3D.point(-1,1,-1),
@@ -518,5 +518,5 @@ Figure Functies::createCube()
             vector3D.point(1,-1,1),
             vector3D.point(-1,1,1)
     };
-    return figure;
+    return kubus;
 }
