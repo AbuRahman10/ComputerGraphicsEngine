@@ -414,9 +414,7 @@ Lines2D Functies::pasFigure(Figures3D &figures3D, const Configuration &configura
     for (int cnt = 0; cnt < nrFigures; cnt++)
     {
         Figure figure1;
-
         figure += to_string(cnt);
-
         vector<double> colors = configuration[figure]["color"].as_double_tuple_or_die();
         string type = configuration[figure]["type"].as_string_or_die();
 
@@ -449,6 +447,10 @@ Lines2D Functies::pasFigure(Figures3D &figures3D, const Configuration &configura
             figure1.points = points;
         }
         else if (type == "Cube")
+        {
+            figure1 = createCube();
+        }
+        else
         {
             figure1 = createCube();
         }
@@ -497,7 +499,13 @@ Lines2D Functies::pasFigure(Figures3D &figures3D, const Configuration &configura
 Figure Functies::createCube()
 {
     Figure figure;
-    vector<vector<int>> pnt_collections = {{1,5,3,7},{5,2,8,3},{2,6,4,8},{6,1,7,4},{7,3,8,4},{1,6,2,5}};
+    vector<vector<int>> pnt_collections = {{0,4,2,6},{4,1,7,2},{1,5,3,7},{5,0,6,3},{6,2,7,3},{0,5,1,4}};
+    for (int i = 0; i < pnt_collections.size(); i++)
+    {
+        Face face;
+        face.point_indexes = pnt_collections[i];
+        figure.faces.push_back(face);
+    }
     Vector3D vector3D;
     figure.points =
     {
@@ -510,13 +518,5 @@ Figure Functies::createCube()
             vector3D.point(1,-1,1),
             vector3D.point(-1,1,1)
     };
-
-    for (int i = 0; i < pnt_collections.size(); i++)
-    {
-        Face face;
-        face.point_indexes = pnt_collections[i];
-        figure.faces.push_back(face);
-    }
-
     return figure;
 }
