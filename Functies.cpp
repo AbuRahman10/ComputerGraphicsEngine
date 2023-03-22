@@ -5,14 +5,9 @@
 #include "Functies.h"
 #include <fstream>
 #include "l_parser.h"
-
 #include "cmath"
-#include "math.h"
 #include "easy_image.h"
-
-#include <iostream>
 #include <string>
-
 #include "Line2D.h"
 #include "Point2D.h"
 #include "Colour.h"
@@ -121,7 +116,6 @@ EasyImage Functies::draw2DLines(const Lines2D &lines, const int size, vector<dou
             image(j, i).blue = lround(backgroundColor[2] * 255);
         }
     }
-
 
     for (int i = 0; i < new_lines.size(); i++)
     {
@@ -406,7 +400,7 @@ Point2D Functies::doProjection(const Vector3D &point, const double d)
     return point2D;
 }
 
-Lines2D Functies::pasFigure(Figures3D &figures3D, const Configuration &configuration, Colour colour)
+Lines2D Functies::pasFigure(Figures3D &figures3D, const Configuration &configuration)
 {
     int nrFigures = configuration["General"]["nrFigures"].as_int_or_die();
     string figure = "Figure";
@@ -701,4 +695,9 @@ Figure Functies::createDodecahedron()
     }
 
     return dodecahedron;
+}
+
+Figure Functies::createSphere()
+{
+
 }

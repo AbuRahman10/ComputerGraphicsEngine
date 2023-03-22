@@ -173,8 +173,6 @@ img::EasyImage generate_image(const ini::Configuration &configuration)
     vector<double> colors = configuration["Figure0"]["color"].as_double_tuple_or_die();
     vector<double> backgroundColors = configuration["General"]["backgroundcolor"].as_double_tuple_or_die();
 
-    Colour colour(colors[0],colors[1],colors[2]);
-
     if (type == "2DLSystem")
     {
         LSystem2D l_system;
@@ -190,7 +188,7 @@ img::EasyImage generate_image(const ini::Configuration &configuration)
     {
         Figures3D figures3D;
         // INLEZEN VAN DE INI FILE
-        Lines2D lines2D = Functies::pasFigure(figures3D,configuration,colour);
+        Lines2D lines2D = Functies::pasFigure(figures3D,configuration);
         // TEKENEN VAN DE 2D LIJNEN
         return Functies::draw2DLines(lines2D, size, backgroundColors);
     }

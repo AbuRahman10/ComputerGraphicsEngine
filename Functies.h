@@ -57,7 +57,7 @@ public:
 
     static Point2D doProjection(const Vector3D &point, const double d);
 
-    static Lines2D pasFigure(Figures3D &figures3D, const Configuration &configuration, Colour colour);
+    static Lines2D pasFigure(Figures3D &figures3D, const Configuration &configuration);
 
     // 3D LICHAMEN
 
@@ -70,6 +70,8 @@ public:
     static Figure createIcosahedron();
 
     static Figure createDodecahedron();
+
+    static Figure createSphere();
 };
 
 #endif //ENGINE_FUNCTIES_H
