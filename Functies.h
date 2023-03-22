@@ -71,7 +71,7 @@ public:
 
     static Figure createDodecahedron();
 
-    static Figure createSphere();
+    static Figure createSphere(const double radius, const int n);
 };
 
 #endif //ENGINE_FUNCTIES_H

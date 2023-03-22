@@ -460,6 +460,10 @@ Lines2D Functies::pasFigure(Figures3D &figures3D, const Configuration &configura
         {
             figure1 = createDodecahedron();
         }
+        else if (type == "Sphere")
+        {
+            figure1 = createSphere(1.5,1);
+        }
         else
         {
             figure1 = createCube();
@@ -511,12 +515,12 @@ Figure Functies::createCube()
     Figure kubus;
     vector<vector<int>> pnt_collections =
     {
-            {0,4,2,6},
-            {4,1,7,2},
-            {1,5,3,7},
-            {5,0,6,3},
-            {6,2,7,3},
-            {0,5,1,4}
+        {0,4,2,6},
+        {4,1,7,2},
+        {1,5,3,7},
+        {5,0,6,3},
+        {6,2,7,3},
+        {0,5,1,4}
     };
     for (int i = 0; i < pnt_collections.size(); i++)
     {
@@ -527,14 +531,14 @@ Figure Functies::createCube()
     Vector3D vector3D;
     kubus.points =
     {
-            vector3D.point(1,-1,-1),
-            vector3D.point(-1,1,-1),
-            vector3D.point(1,1,1),
-            vector3D.point(-1,-1,1),
-            vector3D.point(1,1,-1),
-            vector3D.point(-1,-1,-1),
-            vector3D.point(1,-1,1),
-            vector3D.point(-1,1,1)
+        vector3D.point(1,-1,-1),
+        vector3D.point(-1,1,-1),
+        vector3D.point(1,1,1),
+        vector3D.point(-1,-1,1),
+        vector3D.point(1,1,-1),
+        vector3D.point(-1,-1,-1),
+        vector3D.point(1,-1,1),
+        vector3D.point(-1,1,1)
     };
     return kubus;
 }
@@ -544,10 +548,10 @@ Figure Functies::createTetrahedron()
     Figure tetrahedron;
     vector<vector<int>> pnt_collections =
     {
-            {0,1,2},
-            {1,3,2},
-            {0,3,1},
-            {0,2,3}
+        {0,1,2},
+        {1,3,2},
+        {0,3,1},
+        {0,2,3}
     };
 
     for (int i = 0; i < pnt_collections.size(); i++)
@@ -559,10 +563,10 @@ Figure Functies::createTetrahedron()
     Vector3D vector3D;
     tetrahedron.points =
     {
-            vector3D.point(1,-1,-1),
-            vector3D.point(-1,1,-1),
-            vector3D.point(1,1,1),
-            vector3D.point(-1,-1,1)
+        vector3D.point(1,-1,-1),
+        vector3D.point(-1,1,-1),
+        vector3D.point(1,1,1),
+        vector3D.point(-1,-1,1)
     };
     return tetrahedron;
 }
@@ -571,16 +575,16 @@ Figure Functies::createOctahedron()
 {
     Figure octahedron;
     vector<vector<int>> pnt_collections =
-            {
-                    {0,1,5},
-                    {1,2,5},
-                    {2,3,5},
-                    {3,0,5},
-                    {1,0,4},
-                    {2,1,4},
-                    {3,2,4},
-                    {0,3,4}
-            };
+    {
+        {0,1,5},
+        {1,2,5},
+        {2,3,5},
+        {3,0,5},
+        {1,0,4},
+        {2,1,4},
+        {3,2,4},
+        {0,3,4}
+    };
 
     for (int i = 0; i < pnt_collections.size(); i++)
     {
@@ -591,14 +595,14 @@ Figure Functies::createOctahedron()
 
     Vector3D vector3D;
     octahedron.points =
-            {
-                    vector3D.point(1,0,0),
-                    vector3D.point(0,1,0),
-                    vector3D.point(-1,0,0),
-                    vector3D.point(0,-1,0),
-                    vector3D.point(0,0,-1),
-                    vector3D.point(0,0,1)
-            };
+    {
+        vector3D.point(1,0,0),
+        vector3D.point(0,1,0),
+        vector3D.point(-1,0,0),
+        vector3D.point(0,-1,0),
+        vector3D.point(0,0,-1),
+        vector3D.point(0,0,1)
+    };
     return octahedron;
 }
 
@@ -606,28 +610,28 @@ Figure Functies::createIcosahedron()
 {
     Figure icosahedron;
     vector<vector<int>> pnt_collections =
-            {
-                    {0,1,2},
-                    {0,2,3},
-                    {0,3,4},
-                    {0,4,5},
-                    {0,5,1},
-                    {1,6,2},
-                    {2,6,7},
-                    {2,7,3},
-                    {3,7,8},
-                    {3,8,4},
-                    {4,8,9},
-                    {4,9,5},
-                    {5,9,10},
-                    {5,10,1},
-                    {1,10,6},
-                    {11,7,6},
-                    {11,8,7},
-                    {11,9,8},
-                    {11,10,9},
-                    {11,6,10}
-            };
+    {
+        {0,1,2},
+        {0,2,3},
+        {0,3,4},
+        {0,4,5},
+        {0,5,1},
+        {1,6,2},
+        {2,6,7},
+        {2,7,3},
+        {3,7,8},
+        {3,8,4},
+        {4,8,9},
+        {4,9,5},
+        {5,9,10},
+        {5,10,1},
+        {1,10,6},
+        {11,7,6},
+        {11,8,7},
+        {11,9,8},
+        {11,10,9},
+        {11,6,10}
+    };
 
     for (int i = 0; i < pnt_collections.size(); i++)
     {
@@ -663,18 +667,18 @@ Figure Functies::createDodecahedron()
 
     vector<vector<int>> pnt_collections =
     {
-            {1-1,2-1,3-1,4-1,5-1},
-            {1-1,6-1,7-1,8-1,2-1},
-            {2-1,8-1,9-1,10-1,3-1},
-            {3-1,10-1,11-1,12-1,4-1},
-            {4-1,12-1,13-1,14-1,5-1},
-            {5-1,14-1,15-1,6-1,1-1},
-            {20-1,19-1,18-1,17-1,16-1},
-            {20-1,15-1,14-1,13-1,19-1},
-            {19-1,13-1,12-1,11-1,18-1},
-            {18-1,11-1,10-1,9-1,17-1},
-            {17-1,9-1,8-1,7-1,16-1},
-            {16-1,7-1,6-1,15-1,20-1}
+        {1-1,2-1,3-1,4-1,5-1},
+        {1-1,6-1,7-1,8-1,2-1},
+        {2-1,8-1,9-1,10-1,3-1},
+        {3-1,10-1,11-1,12-1,4-1},
+        {4-1,12-1,13-1,14-1,5-1},
+        {5-1,14-1,15-1,6-1,1-1},
+        {20-1,19-1,18-1,17-1,16-1},
+        {20-1,15-1,14-1,13-1,19-1},
+        {19-1,13-1,12-1,11-1,18-1},
+        {18-1,11-1,10-1,9-1,17-1},
+        {17-1,9-1,8-1,7-1,16-1},
+        {16-1,7-1,6-1,15-1,20-1}
     };
 
     for (int i = 0; i < pnt_collections.size(); i++)
@@ -697,7 +701,38 @@ Figure Functies::createDodecahedron()
     return dodecahedron;
 }
 
-Figure Functies::createSphere()
+Figure Functies::createSphere(const double radius, const int n)
 {
+    Figure sphere;
+    Figure icosahedron = createIcosahedron();
+    vector<Face> faces = icosahedron.faces;
 
+
+    for (Face face : icosahedron.faces)
+    {
+        Vector3D A;
+        Vector3D B;
+        Vector3D C;
+
+        A = A.point(icosahedron.points[face.point_indexes[0]].x,icosahedron.points[face.point_indexes[0]].y,icosahedron.points[face.point_indexes[0]].z);
+        B = B.point(icosahedron.points[face.point_indexes[1]].x,icosahedron.points[face.point_indexes[1]].y,icosahedron.points[face.point_indexes[1]].z);
+        C = C.point(icosahedron.points[face.point_indexes[2]].x,icosahedron.points[face.point_indexes[2]].y,icosahedron.points[face.point_indexes[2]].z);
+
+        Vector3D D;
+        Vector3D F;
+        Vector3D E;
+
+        D = D.point((A.x+B.x)/2,(A.z+B.z)/2,(A.z+B.z)/2);
+        F = F.point((A.x+C.x)/2,(A.z+B.z)/2,(A.z+C.z)/2);
+        E = E.point((B.x+C.x)/2,(B.z+C.z)/2,(B.z+C.z)/2);
+
+        sphere.points.push_back(A);
+        sphere.points.push_back(B);
+        sphere.points.push_back(C);
+        sphere.points.push_back(D);
+        sphere.points.push_back(E);
+        sphere.points.push_back(F);
+    }
+    cout << "hello";
+    return sphere;
 }
