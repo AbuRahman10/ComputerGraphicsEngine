@@ -62,6 +62,12 @@ public:
     // 3D LICHAMEN
 
     static Figure createCube();
+
+    static Figure createTetrahedron();
+
+    static Figure createOctahedron();
+
+    static Figure createIcosahedron();
 };
 
 #endif //ENGINE_FUNCTIES_H

@@ -450,6 +450,14 @@ Lines2D Functies::pasFigure(Figures3D &figures3D, const Configuration &configura
         {
             figure1 = createCube();
         }
+        else if (type == "Tetrahedron")
+        {
+            figure1 = createTetrahedron();
+        }
+        else if (type == "Octahedron")
+        {
+            figure1 = createOctahedron();
+        }
         else
         {
             figure1 = createCube();
@@ -499,7 +507,15 @@ Lines2D Functies::pasFigure(Figures3D &figures3D, const Configuration &configura
 Figure Functies::createCube()
 {
     Figure kubus;
-    vector<vector<int>> pnt_collections = {{0,4,2,6},{4,1,7,2},{1,5,3,7},{5,0,6,3},{6,2,7,3},{0,5,1,4}};
+    vector<vector<int>> pnt_collections =
+    {
+            {0,4,2,6},
+            {4,1,7,2},
+            {1,5,3,7},
+            {5,0,6,3},
+            {6,2,7,3},
+            {0,5,1,4}
+    };
     for (int i = 0; i < pnt_collections.size(); i++)
     {
         Face face;
@@ -519,4 +535,115 @@ Figure Functies::createCube()
             vector3D.point(-1,1,1)
     };
     return kubus;
+}
+
+Figure Functies::createTetrahedron()
+{
+    Figure tetrahedron;
+    vector<vector<int>> pnt_collections =
+    {
+            {0,1,2},
+            {1,3,2},
+            {0,3,1},
+            {0,2,3}
+    };
+
+    for (int i = 0; i < pnt_collections.size(); i++)
+    {
+        Face face;
+        face.point_indexes = pnt_collections[i];
+        tetrahedron.faces.push_back(face);
+    }
+    Vector3D vector3D;
+    tetrahedron.points =
+    {
+            vector3D.point(1,-1,-1),
+            vector3D.point(-1,1,-1),
+            vector3D.point(1,1,1),
+            vector3D.point(-1,-1,1)
+    };
+    return tetrahedron;
+}
+
+Figure Functies::createOctahedron()
+{
+    Figure octahedron;
+    vector<vector<int>> pnt_collections =
+            {
+                    {0,1,5},
+                    {1,2,5},
+                    {2,3,5},
+                    {3,0,5},
+                    {1,0,4},
+                    {2,1,4},
+                    {3,2,4},
+                    {0,3,4}
+            };
+
+    for (int i = 0; i < pnt_collections.size(); i++)
+    {
+        Face face;
+        face.point_indexes = pnt_collections[i];
+        octahedron.faces.push_back(face);
+    }
+
+    Vector3D vector3D;
+    octahedron.points =
+            {
+                    vector3D.point(1,0,0),
+                    vector3D.point(0,1,0),
+                    vector3D.point(-1,0,0),
+                    vector3D.point(0,-1,0),
+                    vector3D.point(0,0,-1),
+                    vector3D.point(0,0,1)
+            };
+    return octahedron;
+}
+
+Figure Functies::createIcosahedron()
+{
+    Figure icosahedron;
+    vector<vector<int>> pnt_collections =
+            {
+                    {0,1,2},
+                    {0,2,3},
+                    {0,3,4},
+                    {0,4,5},
+                    {0,5,1},
+                    {1,6,2},
+                    {2,6,7},
+                    {2,6,7},
+                    {0,3,4},
+                    {0,3,4},
+                    {0,3,4},
+                    {0,3,4},
+                    {0,3,4},
+                    {0,3,4},
+                    {0,3,4},
+                    {0,3,4},
+                    {0,3,4},
+                    {0,3,4},
+                    {0,3,4},
+                    {0,3,4},
+                    {0,3,4},
+            };
+
+    for (int i = 0; i < pnt_collections.size(); i++)
+    {
+        Face face;
+        face.point_indexes = pnt_collections[i];
+        icosahedron.faces.push_back(face);
+    }
+
+    Vector3D vector3D;
+    icosahedron.points =
+            {
+                    vector3D.point(1,0,0),
+                    vector3D.point(0,1,0),
+                    vector3D.point(-1,0,0),
+                    vector3D.point(0,-1,0),
+                    vector3D.point(0,0,-1),
+                    vector3D.point(0,0,1)
+            };
+    return icosahedron;
 }
