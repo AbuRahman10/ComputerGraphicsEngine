@@ -68,6 +68,8 @@ public:
     static Figure createOctahedron();
 
     static Figure createIcosahedron();
+
+    static Figure createDodecahedron();
 };
 
 #endif //ENGINE_FUNCTIES_H

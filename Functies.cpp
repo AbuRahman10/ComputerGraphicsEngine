@@ -458,6 +458,14 @@ Lines2D Functies::pasFigure(Figures3D &figures3D, const Configuration &configura
         {
             figure1 = createOctahedron();
         }
+        else if (type == "Icosahedron")
+        {
+            figure1 = createIcosahedron();
+        }
+        else if (type == "Dodecahedron")
+        {
+            figure1 = createDodecahedron();
+        }
         else
         {
             figure1 = createCube();
@@ -612,20 +620,19 @@ Figure Functies::createIcosahedron()
                     {0,5,1},
                     {1,6,2},
                     {2,6,7},
-                    {2,6,7},
-                    {0,3,4},
-                    {0,3,4},
-                    {0,3,4},
-                    {0,3,4},
-                    {0,3,4},
-                    {0,3,4},
-                    {0,3,4},
-                    {0,3,4},
-                    {0,3,4},
-                    {0,3,4},
-                    {0,3,4},
-                    {0,3,4},
-                    {0,3,4},
+                    {2,7,3},
+                    {3,7,8},
+                    {3,8,4},
+                    {4,8,9},
+                    {4,9,5},
+                    {5,9,10},
+                    {5,10,1},
+                    {1,10,6},
+                    {11,7,6},
+                    {11,8,7},
+                    {11,9,8},
+                    {11,10,9},
+                    {11,6,10}
             };
 
     for (int i = 0; i < pnt_collections.size(); i++)
@@ -635,15 +642,63 @@ Figure Functies::createIcosahedron()
         icosahedron.faces.push_back(face);
     }
 
+    double M_PI = 3.14159265358979323846;
     Vector3D vector3D;
     icosahedron.points =
             {
-                    vector3D.point(1,0,0),
-                    vector3D.point(0,1,0),
-                    vector3D.point(-1,0,0),
-                    vector3D.point(0,-1,0),
-                    vector3D.point(0,0,-1),
-                    vector3D.point(0,0,1)
+                    vector3D.point(0,0, sqrt(5)/2),
+                    vector3D.point(cos((2-2)*2*M_PI/5), sin((2-2)*2*M_PI/5), 0.5),
+                    vector3D.point(cos((3-2)*2*M_PI/5), sin((3-2)*2*M_PI/5), 0.5),
+                    vector3D.point(cos((4-2)*2*M_PI/5), sin((4-2)*2*M_PI/5), 0.5),
+                    vector3D.point(cos((5-2)*2*M_PI/5), sin((5-2)*2*M_PI/5), 0.5),
+                    vector3D.point(cos((6-2)*2*M_PI/5), sin((6-2)*2*M_PI/5), 0.5),
+                    vector3D.point(cos(M_PI/5 + (7-7)*2*M_PI/5),sin(M_PI/5 + (7-7)*2*M_PI/5),-0.5),
+                    vector3D.point(cos(M_PI/5 + (8-7)*2*M_PI/5),sin(M_PI/5 + (8-7)*2*M_PI/5),-0.5),
+                    vector3D.point(cos(M_PI/5 + (9-7)*2*M_PI/5),sin(M_PI/5 + (9-7)*2*M_PI/5),-0.5),
+                    vector3D.point(cos(M_PI/5 + (10-7)*2*M_PI/5),sin(M_PI/5 + (10-7)*2*M_PI/5),-0.5),
+                    vector3D.point(cos(M_PI/5 + (11-7)*2*M_PI/5),sin(M_PI/5 + (11-7)*2*M_PI/5),-0.5),
+                    vector3D.point(0,0,-sqrt(5)/2)
             };
     return icosahedron;
+}
+
+Figure Functies::createDodecahedron()
+{
+    Figure dodecahedron;
+    Figure isocohedron = createIcosahedron();
+
+    vector<vector<int>> pnt_collections =
+    {
+            {1-1,2-1,3-1,4-1,5-1},
+            {1-1,6-1,7-1,8-1,2-1},
+            {2-1,8-1,9-1,10-1,3-1},
+            {3-1,10-1,11-1,12-1,4-1},
+            {4-1,12-1,13-1,14-1,5-1},
+            {5-1,14-1,15-1,6-1,1-1},
+            {20-1,19-1,18-1,17-1,16-1},
+            {20-1,15-1,14-1,13-1,19-1},
+            {19-1,13-1,12-1,11-1,18-1},
+            {18-1,11-1,10-1,9-1,17-1},
+            {17-1,9-1,8-1,7-1,16-1},
+            {16-1,7-1,6-1,15-1,20-1}
+    };
+
+    for (int i = 0; i < pnt_collections.size(); i++)
+    {
+        Face face;
+        face.point_indexes = pnt_collections[i];
+        dodecahedron.faces.push_back(face);
+    }
+
+    for (Face punt : isocohedron.faces)
+    {
+        Vector3D vector3D;
+        vector3D.x = (isocohedron.points[punt.point_indexes[0]].x + isocohedron.points[punt.point_indexes[1]].x + isocohedron.points[punt.point_indexes[2]].x) / 3;
+        vector3D.y = (isocohedron.points[punt.point_indexes[0]].y + isocohedron.points[punt.point_indexes[1]].y + isocohedron.points[punt.point_indexes[2]].y) / 3;
+        vector3D.z = (isocohedron.points[punt.point_indexes[0]].z + isocohedron.points[punt.point_indexes[1]].z + isocohedron.points[punt.point_indexes[2]].z) / 3;
+
+        dodecahedron.points.push_back(vector3D);
+    }
+
+    return dodecahedron;
 }
