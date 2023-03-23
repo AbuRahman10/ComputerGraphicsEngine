@@ -410,6 +410,7 @@ Lines2D Functies::pasFigure(Figures3D &figures3D, const Configuration &configura
         Figure figure1;
         figure += to_string(cnt);
         vector<double> colors = configuration[figure]["color"].as_double_tuple_or_die();
+        int n = configuration[figure]["n"].as_int_or_die();
         string type = configuration[figure]["type"].as_string_or_die();
 
         if (type == "LineDrawing")
@@ -462,7 +463,7 @@ Lines2D Functies::pasFigure(Figures3D &figures3D, const Configuration &configura
         }
         else if (type == "Sphere")
         {
-            figure1 = createSphere(1.5,1);
+            figure1 = createSphere(1.5,n);
         }
         else
         {
@@ -643,20 +644,20 @@ Figure Functies::createIcosahedron()
     double M_PI = 3.14159265358979323846;
     Vector3D vector3D;
     icosahedron.points =
-            {
-                    vector3D.point(0,0, sqrt(5)/2),
-                    vector3D.point(cos((2-2)*2*M_PI/5), sin((2-2)*2*M_PI/5), 0.5),
-                    vector3D.point(cos((3-2)*2*M_PI/5), sin((3-2)*2*M_PI/5), 0.5),
-                    vector3D.point(cos((4-2)*2*M_PI/5), sin((4-2)*2*M_PI/5), 0.5),
-                    vector3D.point(cos((5-2)*2*M_PI/5), sin((5-2)*2*M_PI/5), 0.5),
-                    vector3D.point(cos((6-2)*2*M_PI/5), sin((6-2)*2*M_PI/5), 0.5),
-                    vector3D.point(cos(M_PI/5 + (7-7)*2*M_PI/5),sin(M_PI/5 + (7-7)*2*M_PI/5),-0.5),
-                    vector3D.point(cos(M_PI/5 + (8-7)*2*M_PI/5),sin(M_PI/5 + (8-7)*2*M_PI/5),-0.5),
-                    vector3D.point(cos(M_PI/5 + (9-7)*2*M_PI/5),sin(M_PI/5 + (9-7)*2*M_PI/5),-0.5),
-                    vector3D.point(cos(M_PI/5 + (10-7)*2*M_PI/5),sin(M_PI/5 + (10-7)*2*M_PI/5),-0.5),
-                    vector3D.point(cos(M_PI/5 + (11-7)*2*M_PI/5),sin(M_PI/5 + (11-7)*2*M_PI/5),-0.5),
-                    vector3D.point(0,0,-sqrt(5)/2)
-            };
+    {
+        vector3D.point(0,0, sqrt(5)/2),
+        vector3D.point(cos((2-2)*2*M_PI/5), sin((2-2)*2*M_PI/5), 0.5),
+        vector3D.point(cos((3-2)*2*M_PI/5), sin((3-2)*2*M_PI/5), 0.5),
+        vector3D.point(cos((4-2)*2*M_PI/5), sin((4-2)*2*M_PI/5), 0.5),
+        vector3D.point(cos((5-2)*2*M_PI/5), sin((5-2)*2*M_PI/5), 0.5),
+        vector3D.point(cos((6-2)*2*M_PI/5), sin((6-2)*2*M_PI/5), 0.5),
+        vector3D.point(cos(M_PI/5 + (7-7)*2*M_PI/5),sin(M_PI/5 + (7-7)*2*M_PI/5),-0.5),
+        vector3D.point(cos(M_PI/5 + (8-7)*2*M_PI/5),sin(M_PI/5 + (8-7)*2*M_PI/5),-0.5),
+        vector3D.point(cos(M_PI/5 + (9-7)*2*M_PI/5),sin(M_PI/5 + (9-7)*2*M_PI/5),-0.5),
+        vector3D.point(cos(M_PI/5 + (10-7)*2*M_PI/5),sin(M_PI/5 + (10-7)*2*M_PI/5),-0.5),
+        vector3D.point(cos(M_PI/5 + (11-7)*2*M_PI/5),sin(M_PI/5 + (11-7)*2*M_PI/5),-0.5),
+        vector3D.point(0,0,-sqrt(5)/2)
+    };
     return icosahedron;
 }
 
@@ -703,36 +704,70 @@ Figure Functies::createDodecahedron()
 
 Figure Functies::createSphere(const double radius, const int n)
 {
-    Figure sphere;
-    Figure icosahedron = createIcosahedron();
-    vector<Face> faces = icosahedron.faces;
+    Figure sphere = createIcosahedron();
 
-
-    for (Face face : icosahedron.faces)
+    if (n == 0)
     {
-        Vector3D A;
-        Vector3D B;
-        Vector3D C;
-
-        A = A.point(icosahedron.points[face.point_indexes[0]].x,icosahedron.points[face.point_indexes[0]].y,icosahedron.points[face.point_indexes[0]].z);
-        B = B.point(icosahedron.points[face.point_indexes[1]].x,icosahedron.points[face.point_indexes[1]].y,icosahedron.points[face.point_indexes[1]].z);
-        C = C.point(icosahedron.points[face.point_indexes[2]].x,icosahedron.points[face.point_indexes[2]].y,icosahedron.points[face.point_indexes[2]].z);
-
-        Vector3D D;
-        Vector3D F;
-        Vector3D E;
-
-        D = D.point((A.x+B.x)/2,(A.z+B.z)/2,(A.z+B.z)/2);
-        F = F.point((A.x+C.x)/2,(A.z+B.z)/2,(A.z+C.z)/2);
-        E = E.point((B.x+C.x)/2,(B.z+C.z)/2,(B.z+C.z)/2);
-
-        sphere.points.push_back(A);
-        sphere.points.push_back(B);
-        sphere.points.push_back(C);
-        sphere.points.push_back(D);
-        sphere.points.push_back(E);
-        sphere.points.push_back(F);
+        return sphere;
     }
-    cout << "hello";
+    else
+    {
+        int x = 0;
+        while (x <= n)
+        {
+            for (Face face : sphere.faces)
+            {
+                if (!face.point_indexes.empty())
+                {
+                    Vector3D A = sphere.points[face.point_indexes[0]];
+                    Vector3D B = sphere.points[face.point_indexes[1]];
+                    Vector3D C = sphere.points[face.point_indexes[2]];
+
+                    Vector3D D = Vector3D::point((A.x+B.x)/2,(A.y+B.y)/2,(A.z+B.z)/2);
+                    Vector3D F = Vector3D::point((A.x+C.x)/2,(A.y+B.y)/2,(A.z+C.z)/2);
+                    Vector3D E = Vector3D::point((B.x+C.x)/2,(B.y+C.y)/2,(B.z+C.z)/2);
+
+                    sphere.points.push_back(D);
+                    sphere.points.push_back(E);
+                    sphere.points.push_back(F);
+
+                    int a = face.point_indexes[0];
+                    int b = face.point_indexes[1];
+                    int c = face.point_indexes[2];
+                    int d = sphere.points.size()-3;
+                    int e = sphere.points.size()-2;
+                    int f = sphere.points.size()-1;
+
+                    vector<vector<int>> pts_collections =
+                    {
+                        {a,d,e},
+                        {b,f,d},
+                        {c,e,f},
+                        {d,f,e}
+                    };
+
+                    for (vector<int> vlak : pts_collections)
+                    {
+                        Face face;
+                        face.point_indexes = vlak;
+                        sphere.faces.push_back(face);
+                    }
+                }
+            }
+            x++;
+        }
+    }
+
+
+    for (Vector3D pnt : sphere.points)
+    {
+        double r = sqrt(pow(pnt.x,2)+pow(pnt.y,2)+pow(pnt.z,2));
+        pnt.x = pnt.x / r;
+        pnt.y = pnt.y / r;
+        pnt.z = pnt.z / r;
+
+        pnt.normalise();
+    }
+
     return sphere;
 }
