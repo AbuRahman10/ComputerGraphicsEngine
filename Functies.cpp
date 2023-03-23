@@ -410,7 +410,6 @@ Lines2D Functies::pasFigure(Figures3D &figures3D, const Configuration &configura
         Figure figure1;
         figure += to_string(cnt);
         vector<double> colors = configuration[figure]["color"].as_double_tuple_or_die();
-        int n = configuration[figure]["n"].as_int_or_die();
         string type = configuration[figure]["type"].as_string_or_die();
 
         if (type == "LineDrawing")
@@ -463,7 +462,14 @@ Lines2D Functies::pasFigure(Figures3D &figures3D, const Configuration &configura
         }
         else if (type == "Sphere")
         {
+            int n = configuration[figure]["n"].as_int_or_die();
             figure1 = createSphere(1.5,n);
+        }
+        else if (type == "Cone")
+        {
+            int n = configuration[figure]["n"].as_int_or_die();
+            int h = configuration[figure]["height"].as_double_or_die();
+            figure1 = createCone(n,h);
         }
         else
         {
@@ -760,5 +766,50 @@ Figure Functies::createSphere(const double radius, const int n)
     {
         pnt.normalise();
     }
+
     return sphere;
+}
+
+Figure Functies::createCone(const int n, const double h)
+{
+    Figure cone;
+
+    double PI = 3.14159265358979323846;
+
+    //                                                    PUNTEN
+    // TOP KEGEL
+    Vector3D top = Vector3D::point(0,0,h);
+    cone.points.push_back(top);
+
+    // GRONDPUNT
+    for (int i = 0; i <= n+1; i++)
+    {
+        Vector3D grondpunt = Vector3D::point(cos((2*i*PI)/n),sin((2*i*PI)/n),0);
+        cone.points.push_back(grondpunt);
+    }
+
+    //                                                    VLAKKEN
+    vector<vector<int>> vlakken;
+
+    for (int j = 0; j <= n; j++)
+    {
+        vector<int> mantelvlak{j,(j+1)%n,0};
+        vlakken.push_back(mantelvlak);
+    }
+
+    vector<int> grondvlak;
+    for (int x = 0; x <= n; x++)
+    {
+        grondvlak.push_back(n-x);
+    }
+    vlakken.push_back(grondvlak);
+
+    for (int i = 0; i < vlakken.size(); i++)
+    {
+        Face face;
+        face.point_indexes = vlakken[i];
+        cone.faces.push_back(face);
+    }
+
+    return cone;
 }
