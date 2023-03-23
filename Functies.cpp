@@ -706,68 +706,59 @@ Figure Functies::createSphere(const double radius, const int n)
 {
     Figure sphere = createIcosahedron();
 
-    if (n == 0)
+    vector<Face> faces = sphere.faces;
+    vector<Vector3D> points = sphere.points;
+    for (int i = 0; i < n; i++)
     {
-        return sphere;
-    }
-    else
-    {
-        int x = 0;
-        while (x <= n)
+        sphere.faces.clear();
+        sphere.points.clear();
+
+        for (Face &face : faces)
         {
-            for (Face face : sphere.faces)
+            Vector3D A = points[face.point_indexes[0]];
+            Vector3D B = points[face.point_indexes[1]];
+            Vector3D C = points[face.point_indexes[2]];
+
+            Vector3D D = Vector3D::point((A.x+B.x)/2,(A.y+B.y)/2,(A.z+B.z)/2);
+            Vector3D E = Vector3D::point((A.x+C.x)/2,(A.y+C.y)/2,(A.z+C.z)/2);
+            Vector3D F = Vector3D::point((B.x+C.x)/2,(B.y+C.y)/2,(B.z+C.z)/2);
+
+            sphere.points.push_back(A);
+            sphere.points.push_back(B);
+            sphere.points.push_back(C);
+            sphere.points.push_back(D);
+            sphere.points.push_back(E);
+            sphere.points.push_back(F);
+
+            int a = sphere.points.size()-6;
+            int b = sphere.points.size()-5;
+            int c = sphere.points.size()-4;
+            int d = sphere.points.size()-3;
+            int e = sphere.points.size()-2;
+            int f = sphere.points.size()-1;
+
+            vector<vector<int>> pts_collections =
             {
-                if (!face.point_indexes.empty())
-                {
-                    Vector3D A = sphere.points[face.point_indexes[0]];
-                    Vector3D B = sphere.points[face.point_indexes[1]];
-                    Vector3D C = sphere.points[face.point_indexes[2]];
+                {a,d,e},
+                {b,f,d},
+                {c,e,f},
+                {d,f,e}
+            };
 
-                    Vector3D D = Vector3D::point((A.x+B.x)/2,(A.y+B.y)/2,(A.z+B.z)/2);
-                    Vector3D F = Vector3D::point((A.x+C.x)/2,(A.y+B.y)/2,(A.z+C.z)/2);
-                    Vector3D E = Vector3D::point((B.x+C.x)/2,(B.y+C.y)/2,(B.z+C.z)/2);
-
-                    sphere.points.push_back(D);
-                    sphere.points.push_back(E);
-                    sphere.points.push_back(F);
-
-                    int a = face.point_indexes[0];
-                    int b = face.point_indexes[1];
-                    int c = face.point_indexes[2];
-                    int d = sphere.points.size()-3;
-                    int e = sphere.points.size()-2;
-                    int f = sphere.points.size()-1;
-
-                    vector<vector<int>> pts_collections =
-                    {
-                        {a,d,e},
-                        {b,f,d},
-                        {c,e,f},
-                        {d,f,e}
-                    };
-
-                    for (vector<int> vlak : pts_collections)
-                    {
-                        Face face;
-                        face.point_indexes = vlak;
-                        sphere.faces.push_back(face);
-                    }
-                }
+            for (vector<int> &vlak : pts_collections)
+            {
+                Face face;
+                face.point_indexes = vlak;
+                sphere.faces.push_back(face);
             }
-            x++;
         }
+        faces = sphere.faces;
+        points = sphere.points;
     }
 
-
-    for (Vector3D pnt : sphere.points)
+    for (Vector3D &pnt : sphere.points)
     {
-        double r = sqrt(pow(pnt.x,2)+pow(pnt.y,2)+pow(pnt.z,2));
-        pnt.x = pnt.x / r;
-        pnt.y = pnt.y / r;
-        pnt.z = pnt.z / r;
-
         pnt.normalise();
     }
-
     return sphere;
 }
