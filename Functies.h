@@ -74,6 +74,8 @@ public:
     static Figure createSphere(const double radius, const int n);
 
     static Figure createCone(const int n, const double h);
+
+    static Figure createCylinder(const int n, const double h);
 };
 
 #endif //ENGINE_FUNCTIES_H

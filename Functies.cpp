@@ -468,8 +468,14 @@ Lines2D Functies::pasFigure(Figures3D &figures3D, const Configuration &configura
         else if (type == "Cone")
         {
             int n = configuration[figure]["n"].as_int_or_die();
-            int h = configuration[figure]["height"].as_double_or_die();
+            double h = configuration[figure]["height"].as_double_or_die();
             figure1 = createCone(n,h);
+        }
+        else if (type == "Cylinder")
+        {
+            int n = configuration[figure]["n"].as_int_or_die();
+            double h = configuration[figure]["height"].as_double_or_die();
+            figure1 = createCylinder(n,h);
         }
         else
         {
@@ -773,11 +779,8 @@ Figure Functies::createSphere(const double radius, const int n)
 Figure Functies::createCone(const int n, const double h)
 {
     Figure cone;
-
     double PI = 3.14159265358979323846;
-
     //                                                    PUNTEN
-
     for (int i = 0; i < n + 1; i++)
     {
         if (i == n)
@@ -793,10 +796,8 @@ Figure Functies::createCone(const int n, const double h)
             cone.points.push_back(grondpunt);
         }
     }
-
     //                                                    VLAKKEN
     vector<vector<int>> vlakken;
-
     for (int j = 0; j < n + 1; j++)
     {
         if (j == n)
@@ -814,13 +815,42 @@ Figure Functies::createCone(const int n, const double h)
             vlakken.push_back(mantelvlak);
         }
     }
-
     for (int i = 0; i < vlakken.size(); i++)
     {
         Face face;
         face.point_indexes = vlakken[i];
         cone.faces.push_back(face);
     }
-
     return cone;
+}
+
+Figure Functies::createCylinder(const int n, const double h)
+{
+    Figure cylinder;
+    double PI = 3.14159265358979323846;
+
+    //                                                    PUNTEN
+    for (int i = 0; i < 2*n; i++)
+    {
+        // TOP KEGEL
+        Vector3D toppunt = Vector3D::point(cos((2*i*PI)/n),sin((2*i*PI)/n),h);
+        cylinder.points.push_back(toppunt);
+        // GRONDPUNT
+        Vector3D grondpunt = Vector3D::point(cos((2*i*PI)/n),sin((2*i*PI)/n),0);
+        cylinder.points.push_back(grondpunt);
+    }
+    //                                                    VLAKKEN
+    vector<vector<int>> vlakken;
+    for (int j = 0; j < 2*n; j+=2)
+    {
+        vector<int> mantelvlak{j,(j+1)%(2*n),(j+3)%(2*n),(j+2)%(2*n)};
+        vlakken.push_back(mantelvlak);
+    }
+    for (int i = 0; i < vlakken.size(); i++)
+    {
+        Face face;
+        face.point_indexes = vlakken[i];
+        cylinder.faces.push_back(face);
+    }
+    return cylinder;
 }
