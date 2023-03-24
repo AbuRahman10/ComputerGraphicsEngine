@@ -777,32 +777,43 @@ Figure Functies::createCone(const int n, const double h)
     double PI = 3.14159265358979323846;
 
     //                                                    PUNTEN
-    // TOP KEGEL
-    Vector3D top = Vector3D::point(0,0,h);
-    cone.points.push_back(top);
 
-    // GRONDPUNT
-    for (int i = 0; i <= n+1; i++)
+    for (int i = 0; i < n + 1; i++)
     {
-        Vector3D grondpunt = Vector3D::point(cos((2*i*PI)/n),sin((2*i*PI)/n),0);
-        cone.points.push_back(grondpunt);
+        if (i == n)
+        {
+            // TOP KEGEL
+            Vector3D top = Vector3D::point(0,0,h);
+            cone.points.push_back(top);
+        }
+        else
+        {
+            // GRONDPUNT
+            Vector3D grondpunt = Vector3D::point(cos((2*i*PI)/n),sin((2*i*PI)/n),0);
+            cone.points.push_back(grondpunt);
+        }
     }
 
     //                                                    VLAKKEN
     vector<vector<int>> vlakken;
 
-    for (int j = 0; j <= n; j++)
+    for (int j = 0; j < n + 1; j++)
     {
-        vector<int> mantelvlak{j,(j+1)%n,0};
-        vlakken.push_back(mantelvlak);
+        if (j == n)
+        {
+            vector<int> grondvlak;
+            for (int x = 0; x <= n; x++)
+            {
+                grondvlak.push_back(n-x);
+            }
+            vlakken.push_back(grondvlak);
+        }
+        else
+        {
+            vector<int> mantelvlak{j,(j+1)%n,n};
+            vlakken.push_back(mantelvlak);
+        }
     }
-
-    vector<int> grondvlak;
-    for (int x = 0; x <= n; x++)
-    {
-        grondvlak.push_back(n-x);
-    }
-    vlakken.push_back(grondvlak);
 
     for (int i = 0; i < vlakken.size(); i++)
     {
