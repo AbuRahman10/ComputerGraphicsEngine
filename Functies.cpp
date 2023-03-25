@@ -477,6 +477,14 @@ Lines2D Functies::pasFigure(Figures3D &figures3D, const Configuration &configura
             double h = configuration[figure]["height"].as_double_or_die();
             figure1 = createCylinder(n,h);
         }
+        else if (type == "Torus")
+        {
+            double r = configuration[figure]["r"].as_double_or_die();
+            double R = configuration[figure]["R"].as_double_or_die();
+            int n = configuration[figure]["n"].as_int_or_die();
+            int m = configuration[figure]["m"].as_int_or_die();
+            figure1 = createTorus(r,R,n,m);
+        }
         else
         {
             figure1 = createCube();
@@ -853,4 +861,56 @@ Figure Functies::createCylinder(const int n, const double h)
         cylinder.faces.push_back(face);
     }
     return cylinder;
+}
+
+Figure Functies::createTorus(const double r, const double R, const int n, const int m)
+{
+    Figure torus;
+    double PI = 3.14159265358979323846;
+    //                                                    PUNTEN
+    for (int i = 0; i < n; i++)
+    {
+        for (int j = 0; j < m; j++)
+        {
+            double u = (2*i*PI)/n;
+            double v = (2*j*PI)/n;
+            torus.points.push_back(Vector3D::point((R + r * cos(v))*cos(u),(R + r * cos(v))*sin(u),r*sin(v)));
+        }
+    }
+    //                                                    VLAKKEN
+
+    vector<vector<int>> coordinaten;
+    for (int i = 0; i < n; i++)
+    {
+        for (int j = 0; j < m; j++)
+        {
+            coordinaten.push_back(vector<int> {i,j});
+        }
+    }
+
+    vector<vector<int>> vlakken;
+    for (int i = 0; i < n; i++)
+    {
+        for (int j = 0; j < m; j++)
+        {
+            vector<int> vlak;
+            if (i == n-1 and j == m-1)
+            {
+                vlak = {coordinaten[i][j],coordinaten[0][j],coordinaten[0][0],coordinaten[i][0]};
+            }
+            else
+            {
+                vlak = {coordinaten[i][j],coordinaten[(i+1)%n][j],coordinaten[(i+1)%n][(j+1)%m],coordinaten[i][(j+1)%m]};
+            }
+            vlakken.push_back(vlak);
+        }
+    }
+
+    for (int i = 0; i < vlakken.size(); i++)
+    {
+        Face face;
+        face.point_indexes = vlakken[i];
+        torus.faces.push_back(face);
+    }
+    return torus;
 }
