@@ -60,7 +60,6 @@ public:
     static Lines2D pasFigure(Figures3D &figures3D, const Configuration &configuration);
 
     // 3D LICHAMEN
-
     static Figure createCube();
 
     static Figure createTetrahedron();
@@ -78,8 +77,10 @@ public:
     static Figure createCylinder(const int n, const double h);
 
     static Figure createTorus(const double r, const double R, const int n, const int m);
-
+    ///°°°°°°/// 3D L-SYSTEM
     static Figure drawLSystem3D(const LSystem3D &lSystem3D);
+
+    static void leesString(double angle, string string1, Figure& figure);
 };
 
 #endif //ENGINE_FUNCTIES_H

@@ -191,6 +191,22 @@ void Functies::tekenReplace(string &initiator, vector<pair<char,string>> replace
             {
                 nieuw_initiator += i;
             }
+            else if (i == '^')
+            {
+                nieuw_initiator += i;
+            }
+            else if (i == '/')
+            {
+                nieuw_initiator += i;
+            }
+            else if (i == '\\')
+            {
+                nieuw_initiator += i;
+            }
+            else if (i == '|')
+            {
+                nieuw_initiator += i;
+            }
             else
             {
                 for (pair<char,string> alfabet : replacements)
@@ -224,18 +240,14 @@ void Functies::leesString(double starting_angle, double angle, Lines2D &lines, d
         {
             pair<double,double> position(x,y);
             pair<pair<double,double>,double> pos_EN_hoek(position,starting_angle);
-
             myStack.push(pos_EN_hoek);
         }
         else if (k == ')')
         {
             pair<pair<double,double>,double> pos_EN_hoek = myStack.top();
-
             x = pos_EN_hoek.first.first;
             y = pos_EN_hoek.first.second;
-
             starting_angle = pos_EN_hoek.second;
-
             myStack.pop();
         }
         else
@@ -910,8 +922,93 @@ Figure Functies::createTorus(const double r, const double R, const int n, const 
 Figure Functies::drawLSystem3D(const LSystem3D &lSystem3D)
 {
     Figure figure;
+    const double PI = 3.14159265358979323846;
+    // DE COMPONENTEN
+    set<char> alfabet = lSystem3D.get_alphabet();
+    string initiator = lSystem3D.get_initiator();
+    unsigned int iterations = lSystem3D.get_nr_iterations();
+    double angle = lSystem3D.get_angle();
+    //REPLACEMENTS
+    vector<pair<char,string>> replacements;
+    for (char i : alfabet)
+    {
+        string str = lSystem3D.get_replacement(i);
+        pair<char,string> letter(i,str);
+        replacements.push_back(letter);
+    }
+    angle *= (PI/180);
 
-
+    tekenReplace(initiator,replacements,iterations);
+    leesString(angle,initiator,figure);
 
     return figure;
+}
+
+void Functies::leesString(double angle, string string, Figure& figure)
+{
+    stack<vector<Vector3D>> myStack;
+
+    Vector3D H = Vector3D::point(1,0,0);
+    Vector3D L = Vector3D::point(0,1,0);
+    Vector3D U = Vector3D::point(0,0,1);
+
+    int count = 0;
+    for (char k : string)
+    {
+        if (k == '-')
+        {
+            H = H * cos(-angle) + L * sin(-angle);
+            L = -H * sin(-angle) + L * cos(-angle);
+        }
+        else if (k == '+')
+        {
+            H = H * cos(angle) + L * sin(angle);
+            L = -H * sin(angle) + L * cos(angle);
+        }
+        else if (k == '&')
+        {
+            H = H * cos(angle) + (- U * sin(angle)) ;
+            U = U * cos(angle) + H * sin(angle);
+        }
+        else if (k == '^')
+        {
+            H = H * cos(-angle) + (- U * sin(-angle)) ;
+            U = U * cos(-angle) + H * sin(-angle);
+        }
+        else if (k == '/')
+        {
+            L = L * cos(angle) + U * sin (angle);
+            U = -L * sin(angle) + U * cos(angle);
+        }
+        else if (k == '\\')
+        {
+            L = L * cos(-angle) + U * sin (-angle);
+            U = -L * sin(-angle) + U * cos(-angle);
+        }
+        else if (k == '|')
+        {
+            H = -H;
+            L = -L;
+        }
+        else if (k == '(')
+        {
+            myStack.push({H,L,U});
+        }
+        else if (k == ')')
+        {
+            vector<Vector3D> saved_vector = myStack.top();
+            H = saved_vector[0];
+            L = saved_vector[1];
+            U = saved_vector[2];
+            myStack.pop();
+        }
+        else
+        {
+            figure.points.push_back(H);
+            Face face;
+            face.point_indexes = {count};
+            figure.faces.push_back(face);
+            count++;
+        }
+    }
 }

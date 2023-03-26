@@ -168,12 +168,13 @@ EasyImage diamond(unsigned int Wi, unsigned int Hi, int N, vector<double> backgr
 img::EasyImage generate_image(const ini::Configuration &configuration)
 {
     string type = configuration["General"]["type"].as_string_or_die();
-    string input_file = configuration["2DLSystem"]["inputfile"].as_string_or_die();
     int size = configuration["General"]["size"].as_int_or_die();
     vector<double> backgroundColors = configuration["General"]["backgroundcolor"].as_double_tuple_or_die();
 
     if (type == "2DLSystem")
     {
+        string input_file = configuration["2DLSystem"]["inputfile"].as_string_or_die();
+
         LSystem2D l_system;
 
         ifstream input_stream(input_file);
