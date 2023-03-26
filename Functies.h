@@ -78,6 +78,8 @@ public:
     static Figure createCylinder(const int n, const double h);
 
     static Figure createTorus(const double r, const double R, const int n, const int m);
+
+    static Figure drawLSystem3D(const LSystem3D &lSystem3D);
 };
 
 #endif //ENGINE_FUNCTIES_H

@@ -485,6 +485,18 @@ Lines2D Functies::pasFigure(Figures3D &figures3D, const Configuration &configura
             int m = configuration[figure]["m"].as_int_or_die();
             figure1 = createTorus(r,R,n,m);
         }
+        else if (type == "3DLSystem")
+        {
+            string input_file = configuration[figure]["inputfile"].as_string_or_die();
+
+            LSystem3D lSystem3D;
+
+            ifstream input_stream(input_file);
+            input_stream >> lSystem3D;
+            input_stream.close();
+
+            figure1 = drawLSystem3D(lSystem3D);
+        }
         else
         {
             figure1 = createCube();
@@ -866,46 +878,26 @@ Figure Functies::createCylinder(const int n, const double h)
 Figure Functies::createTorus(const double r, const double R, const int n, const int m)
 {
     Figure torus;
-    double PI = 3.14159265358979323846;
+    const double PI = 3.14159265358979323846;
     //                                                    PUNTEN
     for (int i = 0; i < n; i++)
     {
         for (int j = 0; j < m; j++)
         {
             double u = (2*i*PI)/n;
-            double v = (2*j*PI)/n;
+            double v = (2*j*PI)/m;
             torus.points.push_back(Vector3D::point((R + r * cos(v))*cos(u),(R + r * cos(v))*sin(u),r*sin(v)));
         }
     }
     //                                                    VLAKKEN
-
-    vector<vector<int>> coordinaten;
-    for (int i = 0; i < n; i++)
-    {
-        for (int j = 0; j < m; j++)
-        {
-            coordinaten.push_back(vector<int> {i,j});
-        }
-    }
-
     vector<vector<int>> vlakken;
     for (int i = 0; i < n; i++)
     {
         for (int j = 0; j < m; j++)
         {
-            vector<int> vlak;
-            if (i == n-1 and j == m-1)
-            {
-                vlak = {coordinaten[i][j],coordinaten[0][j],coordinaten[0][0],coordinaten[i][0]};
-            }
-            else
-            {
-                vlak = {coordinaten[i][j],coordinaten[(i+1)%n][j],coordinaten[(i+1)%n][(j+1)%m],coordinaten[i][(j+1)%m]};
-            }
-            vlakken.push_back(vlak);
+            vlakken.push_back({i*m + j, ((i+1)%n)*m + j, ((i+1)%n)*m + (j+1)%m, i*m + (j+1)%m});
         }
     }
-
     for (int i = 0; i < vlakken.size(); i++)
     {
         Face face;
@@ -913,4 +905,13 @@ Figure Functies::createTorus(const double r, const double R, const int n, const 
         torus.faces.push_back(face);
     }
     return torus;
+}
+
+Figure Functies::drawLSystem3D(const LSystem3D &lSystem3D)
+{
+    Figure figure;
+
+
+
+    return figure;
 }
