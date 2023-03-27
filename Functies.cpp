@@ -939,12 +939,12 @@ Figure Functies::drawLSystem3D(const LSystem3D &lSystem3D)
     angle *= (PI/180);
 
     tekenReplace(initiator,replacements,iterations);
-    leesString(angle,initiator,figure);
+    leesString(angle,initiator,figure,lSystem3D);
 
     return figure;
 }
 
-void Functies::leesString(double angle, string string, Figure& figure)
+void Functies::leesString(double angle, string string, Figure& figure, const LSystem3D &lSystem3D)
 {
     stack<vector<Vector3D>> myStack;
 
@@ -952,38 +952,48 @@ void Functies::leesString(double angle, string string, Figure& figure)
     Vector3D L = Vector3D::point(0,1,0);
     Vector3D U = Vector3D::point(0,0,1);
 
+    Vector3D A = Vector3D::point(0,0,0);
+
+    Vector3D temp = Vector3D::point(0,0,0);
+
     int count = 0;
     for (char k : string)
     {
         if (k == '-')
         {
-            H = H * cos(-angle) + L * sin(-angle);
-            L = -H * sin(-angle) + L * cos(-angle);
+            temp = H;
+            H = temp * cos(-angle) + L * sin(-angle);
+            L = -temp * sin(-angle) + L * cos(-angle);
         }
         else if (k == '+')
         {
-            H = H * cos(angle) + L * sin(angle);
-            L = -H * sin(angle) + L * cos(angle);
+            temp = H;
+            H = temp * cos(angle) + L * sin(angle);
+            L = -temp * sin(angle) + L * cos(angle);
         }
         else if (k == '&')
         {
-            H = H * cos(angle) + (- U * sin(angle)) ;
-            U = U * cos(angle) + H * sin(angle);
+            temp = H;
+            H = temp * cos(angle) - (U * sin(angle)) ;
+            U = U * cos(angle) + temp * sin(angle);
         }
         else if (k == '^')
         {
-            H = H * cos(-angle) + (- U * sin(-angle)) ;
-            U = U * cos(-angle) + H * sin(-angle);
+            temp = H;
+            H = temp * cos(-angle) - (U * sin(-angle)) ;
+            U = U * cos(-angle) + temp * sin(-angle);
         }
         else if (k == '/')
         {
-            L = L * cos(angle) + U * sin (angle);
-            U = -L * sin(angle) + U * cos(angle);
+            temp = L;
+            L = temp * cos(angle) + U * sin (angle);
+            U = -temp * sin(angle) + U * cos(angle);
         }
         else if (k == '\\')
         {
-            L = L * cos(-angle) + U * sin (-angle);
-            U = -L * sin(-angle) + U * cos(-angle);
+            temp = L;
+            L = temp * cos(-angle) + U * sin (-angle);
+            U = -temp * sin(-angle) + U * cos(-angle);
         }
         else if (k == '|')
         {
@@ -992,7 +1002,7 @@ void Functies::leesString(double angle, string string, Figure& figure)
         }
         else if (k == '(')
         {
-            myStack.push({H,L,U});
+            myStack.push({H,L,U,A});
         }
         else if (k == ')')
         {
@@ -1000,14 +1010,21 @@ void Functies::leesString(double angle, string string, Figure& figure)
             H = saved_vector[0];
             L = saved_vector[1];
             U = saved_vector[2];
+            A = saved_vector[3];
+            figure.points.push_back(A);
+            count +=1;
             myStack.pop();
         }
         else
         {
-            figure.points.push_back(H);
+            A += H;
+            figure.points.push_back(A);
             Face face;
-            face.point_indexes = {count};
-            figure.faces.push_back(face);
+            if (lSystem3D.draw(k))
+            {
+                face.point_indexes = {count - 1, count};
+                figure.faces.push_back(face);
+            }
             count++;
         }
     }

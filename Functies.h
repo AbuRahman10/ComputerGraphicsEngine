@@ -80,7 +80,7 @@ public:
     ///°°°°°°/// 3D L-SYSTEM
     static Figure drawLSystem3D(const LSystem3D &lSystem3D);
 
-    static void leesString(double angle, string string1, Figure& figure);
+    static void leesString(double angle, string string1, Figure& figure, const LSystem3D &lSystem3D);
 };
 
 #endif //ENGINE_FUNCTIES_H
