@@ -191,6 +191,10 @@ void Functies::tekenReplace(string &initiator, vector<pair<char,string>> replace
             {
                 nieuw_initiator += i;
             }
+            else if (i == '&')
+            {
+                nieuw_initiator += i;
+            }
             else if (i == '^')
             {
                 nieuw_initiator += i;
@@ -533,7 +537,7 @@ Lines2D Functies::pasFigure(Figures3D &figures3D, const Configuration &configura
         Matrix S,M,T;
 
         S = scaleFigure(scale);
-        M = rotateX(rotX*(pi/180)) * rotateY(rotY*(pi/180)) * rotateZ(rotZ*(pi/180));
+        M = rotateX(rotX*(M_PI/180)) * rotateY(rotY*(M_PI/180)) * rotateZ(rotZ*(M_PI/180));
         T = translate(Vector3D::point(center[0],center[1],center[2]));
 
         Matrix omzetMatrix = S * M * T;
@@ -685,7 +689,7 @@ Figure Functies::createIcosahedron()
         icosahedron.faces.push_back(face);
     }
 
-    double M_PI = 3.14159265358979323846;
+    //double M_PI = 3.14159265358979323846;
     Vector3D vector3D;
     icosahedron.points =
     {
@@ -946,22 +950,18 @@ Figure Functies::drawLSystem3D(const LSystem3D &lSystem3D)
 
 void Functies::leesString(const double angle, string string, Figure& figure, const LSystem3D &lSystem3D)
 {
-    stack<Vector3D> myStack1;
-    stack<Vector3D> myStack2;
-    stack<Vector3D> myStack3;
-    stack<Vector3D> myStack4;
+    stack<vector<Vector3D>> punten_stack;
 
     Vector3D H = Vector3D::point(1,0,0);
     Vector3D L = Vector3D::point(0,1,0);
     Vector3D U = Vector3D::point(0,0,1);
     Vector3D A = Vector3D::point(0,0,0);
+    Vector3D old;
 
     figure.points.push_back(A);
-
     int count = 1;
     for (const char k : string)
     {
-        Vector3D old;
         if (k == '+')
         {
             old = H;
@@ -971,32 +971,32 @@ void Functies::leesString(const double angle, string string, Figure& figure, con
         else if (k == '-')
         {
             old = H;
-            H = H * cos(angle) + L * sin(-angle);
-            L = -old * sin(-angle) + L * cos(angle);
-        }
-        else if (k == '&')
-        {
-            old = H;
-            H = H * cos(angle) - (U * sin(angle));
-            U = U * cos(angle) + old * sin(angle);
+            H = H * cos(-angle) + L * sin(-angle);
+            L = -old * sin(-angle) + L * cos(-angle);
         }
         else if (k == '^')
         {
             old = H;
-            H = H * cos(angle) - (U * sin(-angle)) ;
-            U = U * cos(angle) + old * sin(-angle);
+            H = H * cos(angle) + U * sin(angle);
+            U = -old * sin(angle) + U * cos(angle);
+        }
+        else if (k == '&')
+        {
+            old = H;
+            H = H * cos(-angle) + U * sin(-angle);
+            U = -old * sin(-angle) + U * cos(-angle);
         }
         else if (k == '/')
         {
             old = L;
-            L = L * cos(angle) + U * sin (angle);
-            U = -old * sin(angle) + U * cos(angle);
+            L = L * cos(-angle) - U * sin (-angle);
+            U = old * sin(-angle) + U * cos(-angle);
         }
         else if (k == '\\')
         {
             old = L;
-            L = L * cos(angle) + U * sin (-angle);
-            U = -old * sin(-angle) + U * cos(angle);
+            L = L * cos(angle) - U * sin (angle);
+            U = old * sin(angle) + U * cos(angle);
         }
         else if (k == '|')
         {
@@ -1005,22 +1005,19 @@ void Functies::leesString(const double angle, string string, Figure& figure, con
         }
         else if (k == '(')
         {
-            myStack1.push(H);
-            myStack2.push(L);
-            myStack3.push(U);
-            myStack4.push(A);
+            punten_stack.push({H,L,U,A});
         }
         else if (k == ')')
         {
-            H = myStack1.top();
-            L = myStack2.top();
-            U = myStack3.top();
-            A = myStack4.top();
+            vector<Vector3D> top = punten_stack.top();
+
+            H = top[0];
+            L = top[1];
+            U = top[2];
+            A = top[3];
+
             figure.points.push_back(A);
-            myStack1.pop();
-            myStack2.pop();
-            myStack3.pop();
-            myStack4.pop();
+            punten_stack.pop();
             count++;
         }
         else
