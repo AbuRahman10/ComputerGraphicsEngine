@@ -20,6 +20,9 @@ public:
     Point2D p2;
     Colour color;
 
+    double z1;
+    double z2;
+
     Line2D(const Point2D &p1, const Point2D &p2, const Colour &color);
 };
 
