@@ -33,7 +33,7 @@ set(engine_sources
 	vector3d.cc
 	vector3d.h
 	Face.cpp
-	Face.h)
+	Face.h ZBuffer.cpp ZBuffer.h)
 
 ############################################################
 # Create an executable

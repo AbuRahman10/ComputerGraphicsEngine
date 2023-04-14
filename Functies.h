@@ -14,6 +14,7 @@
 #include "ini_configuration.h"
 #include "vector3d.h"
 #include "Figure.h"
+#include "ZBuffer.h"
 
 using namespace std;
 using namespace img;
@@ -81,6 +82,8 @@ public:
     static Figure drawLSystem3D(const LSystem3D &lSystem3D);
 
     static void leesString(const double angle, string string1, Figure& figure, const LSystem3D &lSystem3D);
+
+    void draw_zbuf_line(ZBuffer &zBuffer,EasyImage &image,const unsigned int x0, const unsigned int y0, const double z0, const unsigned int x1, const unsigned int y1, const double z1, const Color &color);
 };
 
 #endif //ENGINE_FUNCTIES_H

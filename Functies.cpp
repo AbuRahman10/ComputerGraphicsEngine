@@ -12,6 +12,8 @@
 #include "Point2D.h"
 #include "Colour.h"
 #include "stack"
+#include "ZBuffer.h"
+#include "limits"
 
 using namespace std;
 using namespace img;
@@ -117,6 +119,20 @@ EasyImage Functies::draw2DLines(const Lines2D &lines, const int size, vector<dou
         }
     }
 
+    ZBuffer zBuffer(lround(Image_x),lround(Image_y));
+    for (int i = 0; i < zBuffer.height; i++)
+    {
+        vector<double> rij;
+        for (int j = 0; j < zBuffer.width; j++)
+        {
+            double infinity = numeric_limits<double>::infinity();
+            rij.push_back(infinity);
+        }
+        zBuffer.push_back(rij);
+    }
+
+
+
     for (int i = 0; i < new_lines.size(); i++)
     {
         double xP1 = lround(new_lines[i].p1.x);
@@ -130,6 +146,11 @@ EasyImage Functies::draw2DLines(const Lines2D &lines, const int size, vector<dou
         image.draw_line(xP1, yP1, xP2, yP2,color);
     }
     return image;
+}
+
+void Functies::draw_zbuf_line(ZBuffer &zBuffer, EasyImage &image, const unsigned int x0, const unsigned int y0, const double z0, const unsigned int x1, const unsigned int y1, const double z1, const Color &color)
+{
+    image.draw_line(x0,y0,x1,y1,color);
 }
 
 Lines2D Functies::drawLSystem(const LSystem2D &l_system)
@@ -1034,3 +1055,5 @@ void Functies::leesString(const double angle, string string, Figure& figure, con
         }
     }
 }
+
+
