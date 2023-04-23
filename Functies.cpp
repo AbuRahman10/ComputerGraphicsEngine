@@ -120,28 +120,21 @@ EasyImage Functies::draw2DLines(const Lines2D &lines, const int size, vector<dou
     }
 
     ZBuffer zBuffer(lround(Image_x),lround(Image_y));
-    for (int i = 0; i < zBuffer.height; i++)
-    {
-        vector<double> rij;
-        for (int j = 0; j < zBuffer.width; j++)
-        {
-            double infinity = numeric_limits<double>::infinity();
-            rij.push_back(infinity);
-        }
-        zBuffer.push_back(rij);
-    }
 
     for (int i = 0; i < new_lines.size(); i++)
     {
         double xP1 = lround(new_lines[i].p1.x);
         double yP1 = lround(new_lines[i].p1.y);
 
+        double z1 = new_lines[i].z1;
+        double z2 = new_lines[i].z2;
+
         double xP2 = lround(new_lines[i].p2.x);
         double yP2 = lround(new_lines[i].p2.y);
 
         Color color(lround(new_lines[i].color.red*255), lround(new_lines[i].color.green*255), lround(new_lines[i].color.blue*255));
 
-        image.draw_line(xP1, yP1, xP2, yP2,color);
+        zBuffer.draw_zbuf_line(image,xP1,yP2,z1,xP1,yP2,z2,color);
     }
     return image;
 }
@@ -403,15 +396,21 @@ Lines2D Functies::doProjection(const Figures3D &figures3D)
             {
                 Point2D p1;
                 Point2D p2;
+                double z1;
+                double z2;
                 if (ind == face.point_indexes.size() - 1)
                 {
                     p1 = doProjection(figure.points[face.point_indexes[ind]],1);
                     p2 = doProjection(figure.points[face.point_indexes[0]],1);
+                    z1 = figure.points[face.point_indexes[ind]].z;
+                    z2 = figure.points[face.point_indexes[0]].z;
                 }
                 else
                 {
                     p1 = doProjection(figure.points[face.point_indexes[ind]],1);
                     p2 = doProjection(figure.points[face.point_indexes[ind + 1]],1);
+                    z1 = figure.points[face.point_indexes[ind]].z;
+                    z2 = figure.points[face.point_indexes[ind + 1]].z;
                 }
                 Line2D line2D(p1,p2,figure.color);
                 lines2D.push_back(line2D);

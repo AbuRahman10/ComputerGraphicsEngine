@@ -184,7 +184,7 @@ img::EasyImage generate_image(const ini::Configuration &configuration)
         Lines2D lines2D = Functies::drawLSystem(l_system);
         return Functies::draw2DLines(lines2D, size, backgroundColors);
     }
-    else if (type == "Wireframe")
+    else if (type == "Wireframe" or type == "ZBufferedWireframe")
     {
         Figures3D figures3D;
         // INLEZEN VAN DE INI FILE
