@@ -6,6 +6,9 @@
 #include "ZBuffer.h"
 #include "limits"
 #include "math.h"
+#include <assert.h>
+
+inline int roundToInt(double d) { return static_cast<int>(round(d)); }
 
 ZBuffer::ZBuffer(const int width, const int height) : width(width), height(height)
 {
@@ -38,35 +41,53 @@ void ZBuffer::draw_zbuf_line(EasyImage &image, unsigned int x0, unsigned int y0,
         if (inv_z < (*this)[y0][x0])
         {
             (*this)[y0][x0] = inv_z;
+            (image)(x0, y0) = color;
         }
-        (image)(x0, y0) = color;
     }
     else if (x0 == x1)
     {
-        unsigned int a = max(y0, y1) - min(y0, y1);
+        if (y0 > y1)
+        {
+            std::swap(x0, x1);
+            std::swap(y0, y1);
+            std::swap(z0, z1);
+        }
         //special case for x0 == x1
+        double a = max(y0, y1) - min(y0, y1);
+        int n = 0;
         for (unsigned int i = min(y0, y1); i <= max(y0, y1); i++)
         {
-            double inv_z = ((i/a)/z0) + (1-(i/a)/z1);
+            double p = 1-(n/a);
+            double inv_z = (p/z0) + ((1-p)/z1);
             if (inv_z < (*this)[i][x0])
             {
                 (*this)[i][x0] = inv_z;
+                (image)(x0, i) = color;
             }
-            (image)(x0, i) = color;
+            n++;
         }
     }
     else if (y0 == y1)
     {
-        unsigned int a = max(x0, x1) - min(x0, x1);
+        if (x0 > x1)
+        {
+            std::swap(x0, x1);
+            std::swap(y0, y1);
+            std::swap(z0, z1);
+        }
         //special case for y0 == y1
+        double a = max(x0, x1) - min(x0, x1);
+        int n = 0;
         for (unsigned int i = min(x0, x1); i <= max(x0, x1); i++)
         {
-            double inv_z = ((i/a)/z0) + (((1-a)/a)/z1);
-            if (inv_z < (*this)[i][y0])
+            double p = 1-(n/a);
+            double inv_z = (p/z0) + ((1-p)/z1);
+            if (inv_z < (*this)[y0][i])
             {
-                (*this)[i][y0] = inv_z;
+                (*this)[y0][i] = inv_z;
+                (image)(i, y0) = color;
             }
-            (image)(i, y0) = color;
+            n++;
         }
     }
     else
@@ -81,41 +102,44 @@ void ZBuffer::draw_zbuf_line(EasyImage &image, unsigned int x0, unsigned int y0,
         double m = ((double) y1 - (double) y0) / ((double) x1 - (double) x0);
         if (-1.0 <= m && m <= 1.0)
         {
-            unsigned int a = x1 - x0;
+            double a = x1 - x0;
             for (unsigned int i = 0; i <= (x1 - x0); i++)
             {
-                double inv_z = ((i/a)/z0) + (((1-a)/a)/z1);
+                double p = 1-(i/a);
+                double inv_z = (p/z0) + ((1-p)/z1);
                 if (inv_z < (*this)[(unsigned int) round(y0 + m * i)][x0 + i])
                 {
                     (*this)[(unsigned int) round(y0 + m * i)][x0 + i] = inv_z;
+                    (image)(x0 + i, (unsigned int) round(y0 + m * i)) = color;
                 }
-                (image)(x0 + i, (unsigned int) round(y0 + m * i)) = color;
             }
         }
         else if (m > 1.0)
         {
-            unsigned int a = y1 - y0;
+            double a = y1 - y0;
             for (unsigned int i = 0; i <= (y1 - y0); i++)
             {
-                double inv_z = ((i/a)/z0) + (((1-a)/a)/z1);
+                double p = 1-(i/a);
+                double inv_z = (p/z0) + ((1-p)/z1);
                 if (inv_z < (*this)[y0 + i][(unsigned int) round(x0 + (i / m))])
                 {
                     (*this)[y0 + i][(unsigned int) round(x0 + (i / m))] = inv_z;
+                    (image)((unsigned int) round(x0 + (i / m)), y0 + i) = color;
                 }
-                (image)((unsigned int) round(x0 + (i / m)), y0 + i) = color;
             }
         }
         else if (m < -1.0)
         {
-            unsigned int a = y0-y1;
+            double a = y0-y1;
             for (unsigned int i = 0; i <= (y0 - y1); i++)
             {
-                double inv_z = ((i/a)/z0) + (((1-a)/a)/z1);
+                double p = 1-(i/a);
+                double inv_z = (p/z0) + ((1-p)/z1);
                 if (inv_z < (*this)[y0 - i][(unsigned int) round(x0 - (i / m))])
                 {
                     (*this)[y0 - i][(unsigned int) round(x0 - (i / m))] = inv_z;
+                    (image)((unsigned int) round(x0 - (i / m)), y0 - i) = color;
                 }
-                (image)((unsigned int) round(x0 - (i / m)), y0 - i) = color;
             }
         }
     }

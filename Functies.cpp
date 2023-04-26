@@ -134,7 +134,7 @@ EasyImage Functies::draw2DLines(const Lines2D &lines, const int size, vector<dou
 
         Color color(lround(new_lines[i].color.red*255), lround(new_lines[i].color.green*255), lround(new_lines[i].color.blue*255));
 
-        zBuffer.draw_zbuf_line(image,xP1,yP2,z1,xP1,yP2,z2,color);
+        zBuffer.draw_zbuf_line(image,xP1,yP1,z1,xP2,yP2,z2,color);
     }
     return image;
 }
@@ -412,7 +412,7 @@ Lines2D Functies::doProjection(const Figures3D &figures3D)
                     z1 = figure.points[face.point_indexes[ind]].z;
                     z2 = figure.points[face.point_indexes[ind + 1]].z;
                 }
-                Line2D line2D(p1,p2,figure.color);
+                Line2D line2D(p1,p2,figure.color,z1,z2);
                 lines2D.push_back(line2D);
             }
         }
