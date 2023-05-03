@@ -6,7 +6,6 @@
 #include "ZBuffer.h"
 #include "limits"
 #include "math.h"
-#include <assert.h>
 
 inline int roundToInt(double d) { return static_cast<int>(round(d)); }
 
@@ -26,7 +25,6 @@ ZBuffer::ZBuffer(const int width, const int height) : width(width), height(heigh
 
 void ZBuffer::draw_zbuf_line(EasyImage &image, unsigned int x0, unsigned int y0, double z0, unsigned int x1, unsigned int y1, double z1,const Color &color)
 {
-
     if (x0 >= image.get_width() || y0 >= image.get_height() || x1 >= image.get_width() || y1 > image.get_height())
     {
         std::stringstream ss;
@@ -143,4 +141,21 @@ void ZBuffer::draw_zbuf_line(EasyImage &image, unsigned int x0, unsigned int y0,
             }
         }
     }
+}
+
+vector<Face> ZBuffer::triangulate(const Face &face)
+{
+    vector<Face> faces;
+    for (int i = 1; i < face.point_indexes.size() - 1; i++)
+    {
+        Face face1;
+        face1.point_indexes = {face1.point_indexes[0],face1.point_indexes[i],face1.point_indexes[i+1]};
+        faces.push_back(face1);
+    }
+    return faces;
+}
+
+void ZBuffer::draw_zbuf_triag(EasyImage &image, const Vector3D &A, const Vector3D &B, const Vector3D &C, double d, double dx, double dy, Color color)
+{
+    return;
 }

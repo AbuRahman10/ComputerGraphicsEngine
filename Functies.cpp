@@ -19,7 +19,7 @@ using namespace std;
 using namespace img;
 using namespace LParser;
 
-EasyImage Functies::draw2DLines(const Lines2D &lines, const int size, vector<double> backgroundColor)
+EasyImage Functies::draw2DLines(const Lines2D &lines, const int size, vector<double> backgroundColor, string type)
 {
     // x.min; x.max; y.min; y.max;
 
@@ -85,7 +85,6 @@ EasyImage Functies::draw2DLines(const Lines2D &lines, const int size, vector<dou
     {
         new_lines[i].p1.x *= d;
         new_lines[i].p2.x *= d;
-
         new_lines[i].p1.y *= d;
         new_lines[i].p2.y *= d;
     }
@@ -102,7 +101,6 @@ EasyImage Functies::draw2DLines(const Lines2D &lines, const int size, vector<dou
     {
         new_lines[i].p1.x += d_x;
         new_lines[i].p2.x += d_x;
-
         new_lines[i].p1.y += d_y;
         new_lines[i].p2.y += d_y;
     }
@@ -134,12 +132,19 @@ EasyImage Functies::draw2DLines(const Lines2D &lines, const int size, vector<dou
 
         Color color(lround(new_lines[i].color.red*255), lround(new_lines[i].color.green*255), lround(new_lines[i].color.blue*255));
 
-        zBuffer.draw_zbuf_line(image,xP1,yP1,z1,xP2,yP2,z2,color);
+        if (type == "ZBufferedWireframe")
+        {
+            zBuffer.draw_zbuf_line(image,xP1,yP1,z1,xP2,yP2,z2,color);
+        }
+        else
+        {
+            image.draw_line(xP1,yP1,xP2,yP2,color);
+        }
     }
     return image;
 }
 
-Lines2D Functies::drawLSystem(const LSystem2D &l_system)
+Lines2D Functies::drawLSystem(const LSystem2D &l_system, vector<double> color)
 {
     Lines2D lines; // De uiteindelijke resultaat
 
@@ -169,7 +174,7 @@ Lines2D Functies::drawLSystem(const LSystem2D &l_system)
     double y = 0;
 
     tekenReplace(initiator,replacements, iterations);
-    leesString(starting_angle,angle,lines,x,y,initiator);
+    leesString(starting_angle,angle,lines,x,y,initiator, color);
 
     return lines;
 }
@@ -233,7 +238,7 @@ void Functies::tekenReplace(string &initiator, vector<pair<char,string>> replace
     }
 }
 
-void Functies::leesString(double starting_angle, double angle, Lines2D &lines, double &x, double &y, string string1)
+void Functies::leesString(double starting_angle, double angle, Lines2D &lines, double &x, double &y, string string1, vector<double> color)
 {
     stack<pair<pair<double,double>,double>> myStack;
 
@@ -269,8 +274,8 @@ void Functies::leesString(double starting_angle, double angle, Lines2D &lines, d
             x += cosa;
             y += sina;
             Point2D point2(x,y);
-            Colour color(0,0,0);
-            Line2D line(point1,point2,color);
+            Colour col(color[0],color[1],color[2]);
+            Line2D line(point1,point2,col);
             lines.push_back(line);
         }
     }

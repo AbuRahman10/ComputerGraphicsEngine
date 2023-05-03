@@ -152,7 +152,6 @@ EasyImage diamond(unsigned int Wi, unsigned int Hi, int N, vector<double> backgr
         }
     }
     image.draw_line(0,0,Hi-1,0,color);
-
     for (int i = 0; i < Hi-1; i++)
     {
         if (Ws*i < Wi and Hs*i < Hi)
@@ -161,7 +160,6 @@ EasyImage diamond(unsigned int Wi, unsigned int Hi, int N, vector<double> backgr
         }
     }
     image.draw_line(Hi-1,0,Hi-1,Hi-1,color);
-
     return image;
 }
 
@@ -174,6 +172,7 @@ img::EasyImage generate_image(const ini::Configuration &configuration)
     if (type == "2DLSystem")
     {
         string input_file = configuration["2DLSystem"]["inputfile"].as_string_or_die();
+        vector<double> color = configuration["2DLSystem"]["color"].as_double_tuple_or_die();
 
         LSystem2D l_system;
 
@@ -181,8 +180,8 @@ img::EasyImage generate_image(const ini::Configuration &configuration)
         input_stream >> l_system;
         input_stream.close();
 
-        Lines2D lines2D = Functies::drawLSystem(l_system);
-        return Functies::draw2DLines(lines2D, size, backgroundColors);
+        Lines2D lines2D = Functies::drawLSystem(l_system, color);
+        return Functies::draw2DLines(lines2D, size, backgroundColors, type);
     }
     else if (type == "Wireframe" or type == "ZBufferedWireframe")
     {
@@ -190,7 +189,15 @@ img::EasyImage generate_image(const ini::Configuration &configuration)
         // INLEZEN VAN DE INI FILE
         Lines2D lines2D = Functies::pasFigure(figures3D,configuration);
         // TEKENEN VAN DE 2D LIJNEN
-        return Functies::draw2DLines(lines2D, size, backgroundColors);
+        return Functies::draw2DLines(lines2D, size, backgroundColors, type);
+    }
+    else if (type == "ZBuffering")
+    {
+        Figures3D figures3D;
+        // INLEZEN VAN DE INI FILE
+        Lines2D lines2D = Functies::pasFigure(figures3D,configuration);
+        // TEKENEN VAN DE 2D LIJNEN
+        return Functies::draw2DLines(lines2D, size, backgroundColors, type);
     }
     else
     {
