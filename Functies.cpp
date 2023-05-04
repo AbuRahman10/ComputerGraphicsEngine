@@ -206,8 +206,6 @@ EasyImage Functies::draw2DLines(const Lines2D &lines, Figures3D &figures3D, cons
     // LIJNTEKENING SCHALEN
     double d = 0.95 * (Image_x/ x_range); // schaalfactor d;
 
-    Lines2D new_lines = lines;
-
     double DC_x = d * ((Xmin + Xmax) / 2);
     double DC_y = d * ((Ymin + Ymax) / 2);
 

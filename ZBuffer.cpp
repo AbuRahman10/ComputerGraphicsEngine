@@ -161,18 +161,23 @@ void ZBuffer::draw_zbuf_triag(EasyImage &image, const Vector3D &A, const Vector3
     Point2D B_(((d*B.x)/(-B.z))+dx,((d*B.y)/(-B.z))+dy);
     Point2D C_(((d*C.x)/(-C.z))+dx,((d*C.y)/(-C.z))+dy);
 
-    int yMin = lround(min(min(A_.y,B_.y),C_.y) + 0.5);
-    int yMax = lround(max(max(A_.y,B_.y),C_.y) - 0.5);
+    int yMin = lround(min(min(A_.y,B_.y),C_.y) - 0.5);
+    int yMax = lround(max(max(A_.y,B_.y),C_.y) + 0.5);
 
     double xG = (A_.x + B_.x + C_.x)/3;
     double yG = (A_.y + B_.y + C_.y)/3;
     double inv_zG = (1/(3*A.z)) + (1/(3*B.z)) + (1/(3*C.z));
 
-    Vector3D u = B - A;
-    Vector3D v = C - A;
+    Vector3D u;
+    Vector3D v;
+
+    u.x = B.x - A.x; u.y = B.y - A.y; u.z = B.z - A.z;
+    v.x = C.x - A.x; v.y = C.y - A.y; v.z = C.z - A.z;
+
     double w1 = (u.y * v.z) - (u.z * v.y);
     double w2 = (u.z * v.x) - (u.x * v.z);
     double w3 = (u.x * v.y) - (u.y * v.x);
+
     double k = w1 * A.x + w2 * A.y + w3 * A.z;
 
     double dzdx = w1/(-(d*k));
@@ -211,13 +216,16 @@ void ZBuffer::draw_zbuf_triag(EasyImage &image, const Vector3D &A, const Vector3
         double xL = lround(min(min(xL_AB,xL_AC),xL_BC) + 0.5);
         double xR = lround(max(max(xR_AB,xR_AC),xR_BC) - 0.5);
 
-        for (int x = xL; x <= xR; x++)
+        if (xL >= 0 and xR >= 0)
         {
-            double inv_z = 1.0001 * inv_zG + (x - xG) * dzdx + (y - yG) * dzdy;
-            if (inv_z < (*this)[y][x])
+            for (int x = xL; x <= xR; x++)
             {
-                (*this)[y][x] = inv_z;
-                (image)(x,y) = color;
+                double inv_z = 1.0001 * inv_zG + (x - xG) * dzdx + (y - yG) * dzdy;
+                if (inv_z < (*this)[y][x])
+                {
+                    (*this)[y][x] = inv_z;
+                    (image)(x,y) = color;
+                }
             }
         }
     }
