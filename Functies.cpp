@@ -993,6 +993,10 @@ Figure Functies::createCylinder(const int n, const double h)
     double PI = 3.14159265358979323846;
 
     //                                                    PUNTEN
+
+    cylinder.points.push_back(Vector3D::point(0, 0, h)); // top point
+    cylinder.points.push_back(Vector3D::point(0, 0, 0)); // bottom point
+
     for (int i = 0; i < 2*n; i++)
     {
         // TOP KEGEL
@@ -1009,12 +1013,28 @@ Figure Functies::createCylinder(const int n, const double h)
         vector<int> mantelvlak{j,(j+1)%(2*n),(j+3)%(2*n),(j+2)%(2*n)};
         vlakken.push_back(mantelvlak);
     }
+
+    //                                                      TOP
+    for (int i = 0; i < n; i++)
+    {
+        vector<int> topvlak{i*2, (i*2+2)%(2*n), 2*n};
+        vlakken.push_back(topvlak);
+    }
+
+    //                                                     ONDER
+    for (int i = 0; i < n; i++)
+    {
+        vector<int> bottomvlak{i*2+1, (i*2+3)%(2*n), 2*n+1};
+        vlakken.push_back(bottomvlak);
+    }
+
     for (int i = 0; i < vlakken.size(); i++)
     {
         Face face;
         face.point_indexes = vlakken[i];
         cylinder.faces.push_back(face);
     }
+
     return cylinder;
 }
 

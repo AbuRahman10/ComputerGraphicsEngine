@@ -196,21 +196,24 @@ void ZBuffer::draw_zbuf_triag(EasyImage &image, const Vector3D &A, const Vector3
         // HANDMATIGE FOR LOOP DOOR DE DRIE LIJNEN
         // ---------------------------------------
         // LIJNSTUK AB
-        if (((y-A.y)*(y-B.y) <= 0 and A.y != B.y))
+        double temp1 = (y-A_.y)*(y-B_.y);
+        double temp2 = (y-A_.y)*(y-C_.y);
+        double temp3 = (y-B_.y)*(y-C_.y);
+        if ((y-A_.y)*(y-B_.y) <= 0 and A_.y != B_.y)
         {
-            double xI = B.x + (((A.x - B.x)*(y-B.y))/(A.y-B.y));
+            double xI = B_.x + (((A_.x - B_.x)*(y-B_.y))/(A_.y-B_.y));
             xL_AB = xR_AB = xI;
         }
         // LIJNSTUK AC
-        else if (((y-A.y)*(y-C.y) <= 0 and A.y != C.y))
+        if ((y-A_.y)*(y-C_.y) <= 0 and A_.y != C_.y)
         {
-            double xI = C.x + (((A.x - C.x)*(y-C.y))/(A.y-C.y));
+            double xI = C_.x + (((A_.x - C_.x)*(y-C_.y))/(A_.y-C_.y));
             xL_AC = xR_AC = xI;
         }
         // LIJNSTUK BC
-        else if (((y-B.y)*(y-C.y) <= 0 and B.y != C.y))
+        if ((y-B_.y)*(y-C_.y) <= 0 and B_.y != C_.y)
         {
-            double xI = C.x + (((B.x - C.x)*(y-C.y))/(B.y-C.y));
+            double xI = C_.x + (((B_.x - C_.x)*(y-C_.y))/(B_.y-C_.y));
             xL_BC = xR_BC = xI;
         }
         double xL = lround(min(min(xL_AB,xL_AC),xL_BC) + 0.5);
