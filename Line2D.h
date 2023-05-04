@@ -26,6 +26,8 @@ public:
     Line2D(const Point2D &p1, const Point2D &p2, const Colour &color);
 
     Line2D(const Point2D &p1, const Point2D &p2, const Colour &color, double z1, double z2);
+
+    Line2D(const Point2D &p1, const Point2D &p2);
 };
 
 using Lines2D = vector<Line2D>;

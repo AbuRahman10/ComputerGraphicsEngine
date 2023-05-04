@@ -28,6 +28,8 @@ public:
     //DRAW 2D LINES
     static EasyImage draw2DLines(const Lines2D &lines, const int size, vector<double> backgroundColor, string type);
 
+    static EasyImage draw2DLines(const Lines2D &lines, Figures3D &figures3D, const int size, vector<double> backgroundColor);
+
     //L-SYSTEM
     static Lines2D drawLSystem(const LSystem2D &l_system, vector<double> color);
 
@@ -78,12 +80,11 @@ public:
     static Figure createCylinder(const int n, const double h);
 
     static Figure createTorus(const double r, const double R, const int n, const int m);
+
     ///°°°°°°/// 3D L-SYSTEM
     static Figure drawLSystem3D(const LSystem3D &lSystem3D);
 
     static void leesString(const double angle, string string1, Figure& figure, const LSystem3D &lSystem3D);
-
-
 };
 
 #endif //ENGINE_FUNCTIES_H

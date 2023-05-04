@@ -73,6 +73,7 @@ EasyImage Functies::draw2DLines(const Lines2D &lines, const int size, vector<dou
 
     double deling_x_range = (x_range) / max1;
     double deling_y_range = (y_range) / max1;
+
     double Image_x = size * deling_x_range;
     double Image_y = size * deling_y_range;
 
@@ -139,6 +140,116 @@ EasyImage Functies::draw2DLines(const Lines2D &lines, const int size, vector<dou
         else
         {
             image.draw_line(xP1,yP1,xP2,yP2,color);
+        }
+    }
+    return image;
+}
+
+EasyImage Functies::draw2DLines(const Lines2D &lines, Figures3D &figures3D, const int size, vector<double> backgroundColor)
+{
+    // x.min; x.max; y.min; y.max;
+
+    double Xmin = lines[0].p1.x;
+    double Ymin = lines[0].p1.y;
+
+    double Xmax = lines[0].p1.x;
+    double Ymax = lines[0].p1.y;
+
+    for(const Line2D i : lines)
+    {
+        if(i.p1.x < Xmin)
+        {
+            Xmin = i.p1.x;
+        }
+        if(i.p2.x < Xmin)
+        {
+            Xmin = i.p2.x;
+        }
+        if(i.p1.y < Ymin)
+        {
+            Ymin = i.p1.y;
+        }
+        if(i.p2.y < Ymin)
+        {
+            Ymin = i.p2.y;
+        }
+        if(i.p1.x > Xmax)
+        {
+            Xmax = i.p1.x;
+        }
+        if(i.p2.x > Xmax)
+        {
+            Xmax = i.p2.x;
+        }
+        if(i.p1.y > Ymax)
+        {
+            Ymax = i.p1.y;
+        }
+        if(i.p2.y > Ymax)
+        {
+            Ymax = i.p2.y;
+        }
+    }
+
+    // GROOTTE VAN DE IMAGE
+    double x_range = Xmax - Xmin;
+    double y_range = Ymax - Ymin;
+
+    double max1 = max(x_range,y_range);
+
+    double deling_x_range = (x_range) / max1;
+    double deling_y_range = (y_range) / max1;
+
+    double Image_x = size * deling_x_range;
+    double Image_y = size * deling_y_range;
+
+    // LIJNTEKENING SCHALEN
+    double d = 0.95 * (Image_x/ x_range); // schaalfactor d;
+
+    Lines2D new_lines = lines;
+
+    double DC_x = d * ((Xmin + Xmax) / 2);
+    double DC_y = d * ((Ymin + Ymax) / 2);
+
+    double d_x = (Image_x / 2) - DC_x;
+    double d_y = (Image_y / 2) - DC_y;
+
+    EasyImage image(lround(Image_x),lround(Image_y));
+
+    // BACKGROUND-COLOR AANPASSEN
+    for (unsigned int i = 0; i < lround(Image_y); i++)
+    {
+        for (unsigned int j = 0; j < ::lround(Image_x); j++)
+        {
+            image(j, i).red = lround(backgroundColor[0] * 255);
+            image(j, i).green = lround(backgroundColor[1] * 255);
+            image(j, i).blue = lround(backgroundColor[2] * 255);
+        }
+    }
+
+    ZBuffer zBuffer(lround(Image_x),lround(Image_y));
+
+    // TRIANGULATIE OP ELKE VLAK VAN ELKE FIGUUR
+    for (Figure &figure : figures3D)
+    {
+        vector<Face> faces;
+        for (Face &face : figure.faces)
+        {
+            vector<Face> triangles = zBuffer.triangulate(face);
+            for (Face &f : triangles)
+            {
+                faces.push_back(f);
+            }
+        }
+        figure.faces = faces;
+    }
+
+    for (Figure &figure : figures3D)
+    {
+        for (Face &face : figure.faces)
+        {
+            Color color(lround(figure.color.red*255), lround(figure.color.green*255), lround(figure.color.blue*255));
+            zBuffer.draw_zbuf_triag(image,figure.points[face.point_indexes[0]],figure.points[face.point_indexes[1]],figure.points[face.point_indexes[2]],d,d_x,d_y,color);
         }
     }
     return image;
@@ -1052,5 +1163,3 @@ void Functies::leesString(const double angle, string string, Figure& figure, con
         }
     }
 }
-
-

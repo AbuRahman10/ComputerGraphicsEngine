@@ -6,8 +6,8 @@
 #include "ZBuffer.h"
 #include "limits"
 #include "math.h"
-
-inline int roundToInt(double d) { return static_cast<int>(round(d)); }
+#include "Point2D.h"
+#include "Line2D.h"
 
 ZBuffer::ZBuffer(const int width, const int height) : width(width), height(height)
 {
@@ -149,7 +149,7 @@ vector<Face> ZBuffer::triangulate(const Face &face)
     for (int i = 1; i < face.point_indexes.size() - 1; i++)
     {
         Face face1;
-        face1.point_indexes = {face1.point_indexes[0],face1.point_indexes[i],face1.point_indexes[i+1]};
+        face1.point_indexes = {face.point_indexes[0],face.point_indexes[i],face.point_indexes[i+1]};
         faces.push_back(face1);
     }
     return faces;
@@ -157,5 +157,68 @@ vector<Face> ZBuffer::triangulate(const Face &face)
 
 void ZBuffer::draw_zbuf_triag(EasyImage &image, const Vector3D &A, const Vector3D &B, const Vector3D &C, double d, double dx, double dy, Color color)
 {
-    return;
+    Point2D A_(((d*A.x)/(-A.z))+dx,((d*A.y)/(-A.z))+dy);
+    Point2D B_(((d*B.x)/(-B.z))+dx,((d*B.y)/(-B.z))+dy);
+    Point2D C_(((d*C.x)/(-C.z))+dx,((d*C.y)/(-C.z))+dy);
+
+    int yMin = lround(min(min(A_.y,B_.y),C_.y) + 0.5);
+    int yMax = lround(max(max(A_.y,B_.y),C_.y) - 0.5);
+
+    double xG = (A_.x + B_.x + C_.x)/3;
+    double yG = (A_.y + B_.y + C_.y)/3;
+    double inv_zG = (1/(3*A.z)) + (1/(3*B.z)) + (1/(3*C.z));
+
+    Vector3D u = B - A;
+    Vector3D v = C - A;
+    double w1 = (u.y * v.z) - (u.z * v.y);
+    double w2 = (u.z * v.x) - (u.x * v.z);
+    double w3 = (u.x * v.y) - (u.y * v.x);
+    double k = w1 * A.x + w2 * A.y + w3 * A.z;
+
+    double dzdx = w1/(-(d*k));
+    double dzdy = w2/(-(d*k));
+
+    for (int y = yMin; y <= yMax; y++)
+    {
+        double xL_AB = numeric_limits<double>::infinity();
+        double xL_AC = numeric_limits<double>::infinity();
+        double xL_BC = numeric_limits<double>::infinity();
+
+        double xR_AB = -numeric_limits<double>::infinity();
+        double xR_AC = -numeric_limits<double>::infinity();
+        double xR_BC = -numeric_limits<double>::infinity();
+
+        // HANDMATIGE FOR LOOP DOOR DE DRIE LIJNEN
+        // ---------------------------------------
+        // LIJNSTUK AB
+        if (((y-A.y)*(y-B.y) <= 0 and A.y != B.y))
+        {
+            double xI = B.x + (((A.x - B.x)*(y-B.y))/(A.y-B.y));
+            xL_AB = xR_AB = xI;
+        }
+        // LIJNSTUK AC
+        else if (((y-A.y)*(y-C.y) <= 0 and A.y != C.y))
+        {
+            double xI = C.x + (((A.x - C.x)*(y-C.y))/(A.y-C.y));
+            xL_AC = xR_AC = xI;
+        }
+        // LIJNSTUK BC
+        else if (((y-B.y)*(y-C.y) <= 0 and B.y != C.y))
+        {
+            double xI = C.x + (((B.x - C.x)*(y-C.y))/(B.y-C.y));
+            xL_BC = xR_BC = xI;
+        }
+        double xL = lround(min(min(xL_AB,xL_AC),xL_BC) + 0.5);
+        double xR = lround(max(max(xR_AB,xR_AC),xR_BC) - 0.5);
+
+        for (int x = xL; x <= xR; x++)
+        {
+            double inv_z = 1.0001 * inv_zG + (x - xG) * dzdx + (y - yG) * dzdy;
+            if (inv_z < (*this)[y][x])
+            {
+                (*this)[y][x] = inv_z;
+                (image)(x,y) = color;
+            }
+        }
+    }
 }

@@ -197,7 +197,7 @@ img::EasyImage generate_image(const ini::Configuration &configuration)
         // INLEZEN VAN DE INI FILE
         Lines2D lines2D = Functies::pasFigure(figures3D,configuration);
         // TEKENEN VAN DE 2D LIJNEN
-        return Functies::draw2DLines(lines2D, size, backgroundColors, type);
+        return Functies::draw2DLines(lines2D, figures3D, size, backgroundColors);
     }
     else
     {
