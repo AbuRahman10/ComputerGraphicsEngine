@@ -85,6 +85,9 @@ public:
     static Figure drawLSystem3D(const LSystem3D &lSystem3D);
 
     static void leesString(const double angle, string string1, Figure& figure, const LSystem3D &lSystem3D);
+
+    // 3D FRACTALEN
+    static void generateFractal(Figure& figure, Figures3D& fractal, const int nr_iterations, const double scale);
 };
 
 #endif //ENGINE_FUNCTIES_H

@@ -587,7 +587,7 @@ Lines2D Functies::pasFigure(Figures3D &figures3D, const Configuration &configura
         {
             figure1 = createCube();
         }
-        else if (type == "Tetrahedron")
+        else if (type == "Tetrahedron" or type == "Tetrahedron")
         {
             figure1 = createTetrahedron();
         }
@@ -1180,4 +1180,9 @@ void Functies::leesString(const double angle, string string, Figure& figure, con
             count++;
         }
     }
+}
+
+void Functies::generateFractal(Figure &figure, Figures3D &fractal, const int nr_iterations, const double scale)
+{
+    return;
 }
