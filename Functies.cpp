@@ -587,40 +587,40 @@ Lines2D Functies::pasFigure(Figures3D &figures3D, const Configuration &configura
         {
             figure1 = createCube();
         }
-        else if (type == "Tetrahedron" or type == "Tetrahedron")
+        else if (type == "Tetrahedron" or type == "FractalTetrahedron")
         {
             figure1 = createTetrahedron();
         }
-        else if (type == "Octahedron")
+        else if (type == "Octahedron" or type == "FractalOctahedron")
         {
             figure1 = createOctahedron();
         }
-        else if (type == "Icosahedron")
+        else if (type == "Icosahedron" or type == "FractalIcosahedron")
         {
             figure1 = createIcosahedron();
         }
-        else if (type == "Dodecahedron")
+        else if (type == "Dodecahedron" or type == "FractalDodecahedron")
         {
             figure1 = createDodecahedron();
         }
-        else if (type == "Sphere")
+        else if (type == "Sphere" or type == "FractalSphere")
         {
             int n = configuration[figure]["n"].as_int_or_die();
             figure1 = createSphere(1.5,n);
         }
-        else if (type == "Cone")
+        else if (type == "Cone" or type == "FractalCone")
         {
             int n = configuration[figure]["n"].as_int_or_die();
             double h = configuration[figure]["height"].as_double_or_die();
             figure1 = createCone(n,h);
         }
-        else if (type == "Cylinder")
+        else if (type == "Cylinder" or type == "FractalCylinder")
         {
             int n = configuration[figure]["n"].as_int_or_die();
             double h = configuration[figure]["height"].as_double_or_die();
             figure1 = createCylinder(n,h);
         }
-        else if (type == "Torus")
+        else if (type == "Torus" or type == "FractalTorus")
         {
             double r = configuration[figure]["r"].as_double_or_die();
             double R = configuration[figure]["R"].as_double_or_die();
@@ -670,6 +670,15 @@ Lines2D Functies::pasFigure(Figures3D &figures3D, const Configuration &configura
         Matrix omzetMatrix = S * M * T;
         applyTransformation(figure1,omzetMatrix);
 
+        // create Fractal
+        if (type.find("Fractal") != std::string::npos)
+        {
+            int nr_iterations = configuration[figure]["nrIterations"].as_int_or_die() ;
+            double scale = configuration[figure]["fractalScale"].as_double_or_die();
+            generateFractal(figure1, figures3D, nr_iterations, scale);
+            continue;
+        }
+
         figure = "Figure";
         figures3D.push_back(figure1);
     }
@@ -684,6 +693,31 @@ Lines2D Functies::pasFigure(Figures3D &figures3D, const Configuration &configura
     // 3) 2D Lijntekening
 
     return doProjection(figures3D);
+}
+
+void Functies::generateFractal(Figure &figure, Figures3D &fractal, const int nr_iterations, const double scale)
+{
+    Figures3D new_figures = {figure};
+    for(int i = 0; i < nr_iterations; i++)
+    {
+        Figures3D tempfigures;
+        for (Figure &fig : new_figures)
+        {
+            for (int j = 0; j < fig.points.size(); ++j)
+            {
+                Figure new_figure = fig;
+                applyTransformation(new_figure,scaleFigure(1/(scale)));
+                Vector3D pointMixed = Vector3D::point(fig.points[j].x - new_figure.points[j].x,fig.points[j].y - new_figure.points[j].y,fig.points[j].z - new_figure.points[j].z);
+                applyTransformation(new_figure,translate(pointMixed));
+                tempfigures.push_back(new_figure);
+            }
+        }
+        new_figures = tempfigures;
+    }
+    for (Figure figure1 : new_figures)
+    {
+        fractal.push_back(figure1);
+    }
 }
 
 Figure Functies::createCube()
@@ -1182,7 +1216,4 @@ void Functies::leesString(const double angle, string string, Figure& figure, con
     }
 }
 
-void Functies::generateFractal(Figure &figure, Figures3D &fractal, const int nr_iterations, const double scale)
-{
-    return;
-}
+

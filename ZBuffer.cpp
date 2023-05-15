@@ -196,9 +196,6 @@ void ZBuffer::draw_zbuf_triag(EasyImage &image, const Vector3D &A, const Vector3
         // HANDMATIGE FOR LOOP DOOR DE DRIE LIJNEN
         // ---------------------------------------
         // LIJNSTUK AB
-        double temp1 = (y-A_.y)*(y-B_.y);
-        double temp2 = (y-A_.y)*(y-C_.y);
-        double temp3 = (y-B_.y)*(y-C_.y);
         if ((y-A_.y)*(y-B_.y) <= 0 and A_.y != B_.y)
         {
             double xI = B_.x + (((A_.x - B_.x)*(y-B_.y))/(A_.y-B_.y));
