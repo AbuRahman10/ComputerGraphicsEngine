@@ -583,7 +583,11 @@ Lines2D Functies::pasFigure(Figures3D &figures3D, const Configuration &configura
             figure1.faces = pts_collection;
             figure1.points = points;
         }
-        else if (type == "Cube")
+        else if (type == "BuckyBall" or type == "FractalBuckyBall")
+        {
+            figure1 = createBuckyBall();
+        }
+        else if (type == "Cube" or type == "FractalCube")
         {
             figure1 = createCube();
         }
@@ -871,6 +875,57 @@ Figure Functies::createIcosahedron()
     return icosahedron;
 }
 
+Figure Functies::createBuckyBall()
+{
+    Figure buckyBall = createIcosahedron();
+
+    int originalNumFaces = buckyBall.faces.size();
+    int originalNumPoints = buckyBall.points.size();
+
+    for (int i = 0; i < originalNumFaces; i++)
+    {
+        // Get the three points of the current face
+        int p1 = buckyBall.faces[i].point_indexes[0];
+        int p2 = buckyBall.faces[i].point_indexes[1];
+        int p3 = buckyBall.faces[i].point_indexes[2];
+
+        // Add three new points to the figure
+        Vector3D vector3D;
+        buckyBall.points.push_back(getPoint(buckyBall.points[p1], buckyBall.points[p2], 1.0/3.0));
+        buckyBall.points.push_back(getPoint(buckyBall.points[p2], buckyBall.points[p3], 1.0/3.0));
+        buckyBall.points.push_back(getPoint(buckyBall.points[p3], buckyBall.points[p1], 1.0/3.0));
+
+        int p4 = originalNumPoints;
+        int p5 = originalNumPoints + 1;
+        int p6 = originalNumPoints + 2;
+
+        // Add the three new faces to the figure
+        Face face1, face2, face3;
+        face1.point_indexes = {p1, p4, p6};
+        face2.point_indexes = {p4, p2, p5};
+        face3.point_indexes = {p5, p3, p6};
+        buckyBall.faces.push_back(face1);
+        buckyBall.faces.push_back(face2);
+        buckyBall.faces.push_back(face3);
+
+        // Update the original face with the new points
+        buckyBall.faces[i].point_indexes = {p4, p5, p6};
+
+        originalNumPoints += 3;
+    }
+    return buckyBall;
+}
+
+Vector3D Functies::getPoint(Vector3D p1, Vector3D p2, double factor)
+{
+    double x = p1.x + factor * (p2.x - p1.x);
+    double y = p1.y + factor * (p2.y - p1.y);
+    double z = p1.z + factor * (p2.z - p1.z);
+
+    Vector3D vector3D;
+    return vector3D.point(x,y,z);
+}
+
 Figure Functies::createDodecahedron()
 {
     Figure dodecahedron;
@@ -1105,6 +1160,8 @@ Figure Functies::createTorus(const double r, const double R, const int n, const 
     return torus;
 }
 
+
+
 Figure Functies::drawLSystem3D(const LSystem3D &lSystem3D)
 {
     Figure figure;
@@ -1216,5 +1273,3 @@ void Functies::leesString(const double angle, string string, Figure& figure, con
         }
     }
 }
-
-

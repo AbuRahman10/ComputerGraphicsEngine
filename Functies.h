@@ -81,6 +81,10 @@ public:
 
     static Figure createTorus(const double r, const double R, const int n, const int m);
 
+    static Figure createBuckyBall();
+
+    static Vector3D getPoint(Vector3D p1, Vector3D p2, double factor);
+
     ///°°°°°°/// 3D L-SYSTEM
     static Figure drawLSystem3D(const LSystem3D &lSystem3D);
 
