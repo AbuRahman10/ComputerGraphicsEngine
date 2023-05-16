@@ -670,12 +670,13 @@ Lines2D Functies::pasFigure(Figures3D &figures3D, const Configuration &configura
         Matrix omzetMatrix = S * M * T;
         applyTransformation(figure1,omzetMatrix);
 
-        // create Fractal
+        // CREATE FRACTAL
         if (type.find("Fractal") != std::string::npos)
         {
             int nr_iterations = configuration[figure]["nrIterations"].as_int_or_die() ;
             double scale = configuration[figure]["fractalScale"].as_double_or_die();
             generateFractal(figure1, figures3D, nr_iterations, scale);
+            figure = "Figure";
             continue;
         }
 
