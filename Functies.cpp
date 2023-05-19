@@ -877,41 +877,45 @@ Figure Functies::createIcosahedron()
 
 Figure Functies::createBuckyBall()
 {
-    Figure buckyBall = createIcosahedron();
+    Figure icosahedron = createIcosahedron();
+    Figure buckyBall;
 
-    int originalNumFaces = buckyBall.faces.size();
+    int originalNumFaces = icosahedron.faces.size();
     int originalNumPoints = buckyBall.points.size();
 
     for (int i = 0; i < originalNumFaces; i++)
     {
         // Get the three points of the current face
-        int p1 = buckyBall.faces[i].point_indexes[0];
-        int p2 = buckyBall.faces[i].point_indexes[1];
-        int p3 = buckyBall.faces[i].point_indexes[2];
+        int p1 = icosahedron.faces[i].point_indexes[0];
+        int p2 = icosahedron.faces[i].point_indexes[1];
+        int p3 = icosahedron.faces[i].point_indexes[2];
 
         // Add three new points to the figure
         Vector3D vector3D;
-        buckyBall.points.push_back(getPoint(buckyBall.points[p1], buckyBall.points[p2], 1.0/3.0));
-        buckyBall.points.push_back(getPoint(buckyBall.points[p2], buckyBall.points[p3], 1.0/3.0));
-        buckyBall.points.push_back(getPoint(buckyBall.points[p3], buckyBall.points[p1], 1.0/3.0));
+        buckyBall.points.push_back(getPoint(icosahedron.points[p1], icosahedron.points[p2], 1.0/3.0));
+        buckyBall.points.push_back(getPoint(icosahedron.points[p2], icosahedron.points[p3], 1.0/3.0));
+        buckyBall.points.push_back(getPoint(icosahedron.points[p3], icosahedron.points[p1], 1.0/3.0));
+
+        buckyBall.points.push_back(getPoint(icosahedron.points[p1], icosahedron.points[p2], 2.0/3.0));
+        buckyBall.points.push_back(getPoint(icosahedron.points[p2], icosahedron.points[p3], 2.0/3.0));
+        buckyBall.points.push_back(getPoint(icosahedron.points[p3], icosahedron.points[p1], 2.0/3.0));
 
         int p4 = originalNumPoints;
         int p5 = originalNumPoints + 1;
         int p6 = originalNumPoints + 2;
+        int p7 = originalNumPoints + 3;
+        int p8 = originalNumPoints + 4;
+        int p9 = originalNumPoints + 5;
 
         // Add the three new faces to the figure
-        Face face1, face2, face3;
-        face1.point_indexes = {p1, p4, p6};
-        face2.point_indexes = {p4, p2, p5};
-        face3.point_indexes = {p5, p3, p6};
+        Face face1;
+        face1.point_indexes = {p4, p9, p6, p8, p5, p7};
         buckyBall.faces.push_back(face1);
-        buckyBall.faces.push_back(face2);
-        buckyBall.faces.push_back(face3);
 
         // Update the original face with the new points
-        buckyBall.faces[i].point_indexes = {p4, p5, p6};
+        buckyBall.faces[i].point_indexes = face1.point_indexes;
 
-        originalNumPoints += 3;
+        originalNumPoints += 6;
     }
     return buckyBall;
 }
