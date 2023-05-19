@@ -8,6 +8,7 @@
 #include "cmath"
 #include "easy_image.h"
 #include <string>
+#include <algorithm>
 #include "Line2D.h"
 #include "Point2D.h"
 #include "Colour.h"
@@ -877,45 +878,135 @@ Figure Functies::createIcosahedron()
 
 Figure Functies::createBuckyBall()
 {
-    Figure icosahedron = createIcosahedron();
     Figure buckyBall;
-
+    Figure icosahedron = createIcosahedron();
     int originalNumFaces = icosahedron.faces.size();
     int originalNumPoints = buckyBall.points.size();
-
-    for (int i = 0; i < originalNumFaces; i++)
+    map<int,vector<Vector3D>> points;
+    for (Face &face : icosahedron.faces)
     {
-        // Get the three points of the current face
-        int p1 = icosahedron.faces[i].point_indexes[0];
-        int p2 = icosahedron.faces[i].point_indexes[1];
-        int p3 = icosahedron.faces[i].point_indexes[2];
-
-        // Add three new points to the figure
-        Vector3D vector3D;
+        int p1 = face.point_indexes[0];
+        int p2 = face.point_indexes[1];
+        int p3 = face.point_indexes[2];
+        // ADD POINTS
         buckyBall.points.push_back(getPoint(icosahedron.points[p1], icosahedron.points[p2], 1.0/3.0));
         buckyBall.points.push_back(getPoint(icosahedron.points[p2], icosahedron.points[p3], 1.0/3.0));
         buckyBall.points.push_back(getPoint(icosahedron.points[p3], icosahedron.points[p1], 1.0/3.0));
-
         buckyBall.points.push_back(getPoint(icosahedron.points[p1], icosahedron.points[p2], 2.0/3.0));
         buckyBall.points.push_back(getPoint(icosahedron.points[p2], icosahedron.points[p3], 2.0/3.0));
         buckyBall.points.push_back(getPoint(icosahedron.points[p3], icosahedron.points[p1], 2.0/3.0));
-
+        // INDEXES
         int p4 = originalNumPoints;
         int p5 = originalNumPoints + 1;
         int p6 = originalNumPoints + 2;
         int p7 = originalNumPoints + 3;
         int p8 = originalNumPoints + 4;
         int p9 = originalNumPoints + 5;
-
-        // Add the three new faces to the figure
+        // ADD FACE
         Face face1;
         face1.point_indexes = {p4, p9, p6, p8, p5, p7};
         buckyBall.faces.push_back(face1);
-
-        // Update the original face with the new points
-        buckyBall.faces[i].point_indexes = face1.point_indexes;
-
         originalNumPoints += 6;
+        if(points.count(face.point_indexes[0]) < 1)
+        {
+            points[face.point_indexes[0]] = {getPoint(icosahedron.points[p1], icosahedron.points[p2], 1.0 / 3.0), getPoint(icosahedron.points[p3], icosahedron.points[p1], 2.0 / 3.0)};
+        }
+        else
+        {
+            points[face.point_indexes[0]].push_back(getPoint(icosahedron.points[p1], icosahedron.points[p2], 1.0 / 3.0));
+            points[face.point_indexes[0]].push_back(getPoint(icosahedron.points[p3], icosahedron.points[p1], 2.0 / 3.0));
+        }
+        if(points.count(face.point_indexes[1]) < 1)
+        {
+            points[face.point_indexes[1]] = {getPoint(icosahedron.points[p1], icosahedron.points[p2], 2.0 / 3.0), getPoint(icosahedron.points[p2], icosahedron.points[p3], 1.0 / 3.0)};
+        }
+        else
+        {
+            points[face.point_indexes[1]].push_back(getPoint(icosahedron.points[p1], icosahedron.points[p2], 2.0 / 3.0));
+            points[face.point_indexes[1]].push_back(getPoint(icosahedron.points[p2], icosahedron.points[p3], 1.0 / 3.0));
+        }
+        if(points.count(face.point_indexes[2]) < 1)
+        {
+            points[face.point_indexes[2]] = {getPoint(icosahedron.points[p2], icosahedron.points[p3], 2.0 / 3.0), getPoint(icosahedron.points[p3], icosahedron.points[p1], 1.0 / 3.0)};
+        }
+        else
+        {
+            points[face.point_indexes[2]].push_back(getPoint(icosahedron.points[p2], icosahedron.points[p3], 2.0 / 3.0));
+            points[face.point_indexes[2]].push_back(getPoint(icosahedron.points[p3], icosahedron.points[p1], 1.0 / 3.0));
+        }
+    }
+    for(pair<const int, vector<Vector3D>>& i: points)
+    {
+        vector<Vector3D> vijfPunten;
+        for(int j = 0; j < i.second.size(); j++)
+        {
+            for(int k = j+1; k < i.second.size(); k++)
+            {
+                double lengthx = abs(i.second[j].x - i.second[k].x);
+                double lengthy =  abs(i.second[j].y - i.second[k].y);
+                double lengthz =  abs(i.second[j].z - i.second[k].z);
+                if(lengthx < 0.00001 and lengthy < 0.00001 and lengthz < 0.00001)
+                {
+                    vijfPunten.push_back(i.second[j]);
+                    break;
+                }
+            }
+        }
+        i.second = vijfPunten;
+    }
+    int length = buckyBall.points.size();
+    for(pair<const int, vector<Vector3D>>& i: points)
+    {
+        vector<int> volgorde = {0};
+        for(int j = 0; j < 4; j++)
+        {
+            pair<int,double> kort;
+            for(int k = volgorde[j]; k < 5; k++)
+            {
+                if(k != 4)
+                {
+                    if(count(volgorde.begin(), volgorde.end(), k + 1) == 0)
+                    {
+                        kort.first = k + 1;
+                        kort.second = sqrt(pow(i.second[volgorde[j]].x - i.second[k + 1].x, 2) + pow(i.second[volgorde[j]].y - i.second[k + 1].y, 2) + pow(i.second[volgorde[j]].z - i.second[k + 1].z, 2));
+                        break;
+                    }
+                }
+                else
+                {
+                    for(int f = 0; f < 4; f++)
+                    {
+                        if(count(volgorde.begin(), volgorde.end(), f) == 0)
+                        {
+                            kort.first = f;
+                            kort.second = sqrt(pow(i.second[volgorde[j]].x - i.second[f].x, 2) + pow(i.second[volgorde[j]].y - i.second[f].y, 2) + pow(i.second[volgorde[j]].z - i.second[f].z, 2));
+
+                        }
+                    }
+                }
+            }
+            for(int k = 0; k < i.second.size(); k++)
+            {
+                if(count(volgorde.begin(), volgorde.end(), k) == 0)
+                {
+                    double distance = sqrt(pow(i.second[volgorde[j]].x - i.second[k].x, 2) + pow(i.second[volgorde[j]].y - i.second[k].y, 2) + pow(i.second[volgorde[j]].z - i.second[k].z, 2));
+                    if(distance < kort.second)
+                    {
+                        kort.first = k;
+                        kort.second = distance;
+                    }
+                }
+            }
+            volgorde.push_back(kort.first);
+        }
+        Face face;
+        face.point_indexes = {length, length + 1, length + 2, length + 3, length + 4};
+        buckyBall.faces.push_back(face);
+        for(int j : volgorde)
+        {
+            buckyBall.points.push_back(i.second[j]);
+        }
+        length += 5;
     }
     return buckyBall;
 }
