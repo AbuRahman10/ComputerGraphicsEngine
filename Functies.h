@@ -83,6 +83,8 @@ public:
 
     static Figure createBuckyBall();
 
+    static Figure createMengerSponge(int nrIterations);
+
     static Vector3D getPoint(Vector3D p1, Vector3D p2, double factor);
 
     ///°°°°°°/// 3D L-SYSTEM
