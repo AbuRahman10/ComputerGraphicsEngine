@@ -19,12 +19,12 @@ X: Niet werkend of niet geïmplementeerd
 |   | Bol                       | V      |
 |   | Torus                     | V      |
 |   | 3D L-systemen             | V      |
-| 4 | Z-buffering (lijnen)      | X      |
-| 5 | Triangulatie              | X      |
-|   | Z-buffering (driehoeken)  | X      |
-| 6 | 3D fractalen              | X      |
-|   | BuckyBall                 | X      |
-|   | Mengerspons               | X      |
+| 4 | Z-buffering (lijnen)      | V      |
+| 5 | Triangulatie              | V      |
+|   | Z-buffering (driehoeken)  | V      |
+| 6 | 3D fractalen              | V      |
+|   | BuckyBall                 | V      |
+|   | Mengerspons               | V      |
 |   | View Frustum              | X      |
 | 7 | Ambient licht             | X      |
 |   | Diffuus licht (oneindig)  | X      |

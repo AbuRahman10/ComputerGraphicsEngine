@@ -662,7 +662,7 @@ Lines2D Functies::pasFigure(Figures3D &figures3D, const Configuration &configura
         double rotY = configuration[figure]["rotateY"].as_double_or_die();
         double rotZ = configuration[figure]["rotateZ"].as_double_or_die();
 
-        double M_PI = 3.14159265358979323846;
+        //double M_PI = 3.14159265358979323846;
 
         // 1) MATRIX OPSTELLEN
 
@@ -912,7 +912,7 @@ Figure Functies::createIcosahedron()
         icosahedron.faces.push_back(face);
     }
 
-    double M_PI = 3.14159265358979323846;
+    //double M_PI = 3.14159265358979323846;
     Vector3D vector3D;
     icosahedron.points =
     {
