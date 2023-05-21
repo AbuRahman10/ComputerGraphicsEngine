@@ -588,11 +588,7 @@ Lines2D Functies::pasFigure(Figures3D &figures3D, const Configuration &configura
         {
             figure1 = createBuckyBall();
         }
-        else if (type == "MengerSponge")
-        {
-            figure1 = createMengerSponge(2);
-        }
-        else if (type == "Cube" or type == "FractalCube")
+        else if (type == "Cube" or type == "FractalCube" or type == "MengerSponge")
         {
             figure1 = createCube();
         }
@@ -680,11 +676,25 @@ Lines2D Functies::pasFigure(Figures3D &figures3D, const Configuration &configura
         applyTransformation(figure1,omzetMatrix);
 
         // CREATE FRACTAL
-        if (type.find("Fractal") != std::string::npos)
+        if (type.find("Fractal") != string::npos)
         {
-            int nr_iterations = configuration[figure]["nrIterations"].as_int_or_die() ;
+            int nr_iterations = configuration[figure]["nrIterations"].as_int_or_die();
             double scale = configuration[figure]["fractalScale"].as_double_or_die();
             generateFractal(figure1, figures3D, nr_iterations, scale);
+            figure = "Figure";
+            continue;
+        }
+        if (type == "MengerSponge")
+        {
+            int nr_iterations = configuration[figure]["nrIterations"].as_int_or_die();
+            if (nr_iterations > 0)
+            {
+                createMengerSponge(figure1, figures3D, nr_iterations);
+            }
+            else
+            {
+                figures3D.push_back(figure1);
+            }
             figure = "Figure";
             continue;
         }
@@ -704,6 +714,48 @@ Lines2D Functies::pasFigure(Figures3D &figures3D, const Configuration &configura
 
     return doProjection(figures3D);
 }
+
+void Functies::createMengerSponge(Figure& mengerSponge, Figures3D& figures3D,const int nrIterations)
+{
+    mengerSponge.points.push_back(Vector3D::point(0, -1, 1));
+    mengerSponge.points.push_back(Vector3D::point(0, -1, -1));
+    mengerSponge.points.push_back(Vector3D::point(0, 1, 1));
+    mengerSponge.points.push_back(Vector3D::point(0, 1, -1));
+    mengerSponge.points.push_back(Vector3D::point(-1, 0, 1));
+    mengerSponge.points.push_back(Vector3D::point(-1, 0, -1));
+    mengerSponge.points.push_back(Vector3D::point(1, 0, 1));
+    mengerSponge.points.push_back(Vector3D::point(1, 0, -1));
+    mengerSponge.points.push_back(Vector3D::point(-1, -1, 0));
+    mengerSponge.points.push_back(Vector3D::point(1, -1, 0));
+    mengerSponge.points.push_back(Vector3D::point(-1, 1, 0));
+    mengerSponge.points.push_back(Vector3D::point(1, 1, 0));
+    std::vector<Figure> toConvert = {mengerSponge};
+    std::vector<Figure> newFigs;
+
+    for (unsigned int it = 0; it < nrIterations; it++)
+    {
+        newFigs.clear();
+        for (auto & curFig : toConvert)
+        {
+            for (unsigned int pointIndex = 0; pointIndex < curFig.points.size(); pointIndex++)
+            {
+                Vector3D curPoint = curFig.points[pointIndex];
+                Figure newFig = curFig;
+                Matrix S = scaleFigure(1.0/3.0);
+                applyTransformation(newFig, S);
+                Matrix T = translate(curPoint - newFig.points[pointIndex]);
+                applyTransformation(newFig, T);
+                newFigs.push_back(newFig);
+            }
+        }
+        toConvert = newFigs;
+    }
+    for (auto &curFig : newFigs)
+    {
+        figures3D.push_back(curFig);
+    }
+}
+
 
 void Functies::generateFractal(Figure &figure, Figures3D &fractal, const int nr_iterations, const double scale)
 {
@@ -1014,64 +1066,6 @@ Figure Functies::createBuckyBall()
     }
     return buckyBall;
 }
-
-Figure Functies::createMengerSponge(int nrIterations)
-{
-    Figure mengerSponge = createCube();
-    int originalNumPoints = mengerSponge.faces.size();
-    for (int x = 0; x < 6; x++)
-    {
-        int p1 = mengerSponge.faces[x].point_indexes[0];
-        int p2 = mengerSponge.faces[x].point_indexes[1];
-        int p3 = mengerSponge.faces[x].point_indexes[2];
-        int p4 = mengerSponge.faces[x].point_indexes[3];
-
-        // ADD POINTS
-        Vector3D AB1 = getPoint(mengerSponge.points[p1], mengerSponge.points[p2], 1.0/3.0);
-        Vector3D AB2 = getPoint(mengerSponge.points[p1], mengerSponge.points[p2], 2.0/3.0);
-        Vector3D BC1 = getPoint(mengerSponge.points[p2], mengerSponge.points[p3], 1.0/3.0);
-        Vector3D BC2 = getPoint(mengerSponge.points[p2], mengerSponge.points[p3], 2.0/3.0);
-        Vector3D CD1 = getPoint(mengerSponge.points[p3], mengerSponge.points[p4], 1.0/3.0);
-        Vector3D CD2 = getPoint(mengerSponge.points[p3], mengerSponge.points[p4], 2.0/3.0);
-        Vector3D DA1 = getPoint(mengerSponge.points[p4], mengerSponge.points[p1], 1.0/3.0);
-        Vector3D DA2 = getPoint(mengerSponge.points[p4], mengerSponge.points[p1], 2.0/3.0);
-
-        mengerSponge.points.push_back(AB1);
-        mengerSponge.points.push_back(AB2);
-        mengerSponge.points.push_back(BC1);
-        mengerSponge.points.push_back(BC2);
-        mengerSponge.points.push_back(CD1);
-        mengerSponge.points.push_back(CD2);
-        mengerSponge.points.push_back(DA1);
-        mengerSponge.points.push_back(DA2);
-
-        // INDEXES
-        int ab1 = originalNumPoints;
-        int ab2 = originalNumPoints + 1;
-        int bc1 = originalNumPoints + 2;
-        int bc2 = originalNumPoints + 3;
-        int cd1 = originalNumPoints + 4;
-        int cd2 = originalNumPoints + 5;
-        int da1 = originalNumPoints + 6;
-        int da2 = originalNumPoints + 7;
-        // ADD FACE
-        vector<vector<int>> points
-        {
-            {p1,p2,bc1,da2},
-            {da2,bc1,bc2,da1},
-            {p4,p3,bc2,da1}
-        };
-        for (vector<int> i : points)
-        {
-            Face vlak;
-            vlak.point_indexes = i;
-            mengerSponge.faces.push_back(vlak);
-        }
-        originalNumPoints += 8;
-    }
-    return mengerSponge;
-}
-
 
 Vector3D Functies::getPoint(Vector3D p1, Vector3D p2, double factor)
 {

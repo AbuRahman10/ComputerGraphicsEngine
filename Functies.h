@@ -83,7 +83,7 @@ public:
 
     static Figure createBuckyBall();
 
-    static Figure createMengerSponge(int nrIterations);
+    static void createMengerSponge(Figure& figure, Figures3D& figures3D,const int nrIterations);
 
     static Vector3D getPoint(Vector3D p1, Vector3D p2, double factor);
 
