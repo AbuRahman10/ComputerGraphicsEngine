@@ -1235,7 +1235,7 @@ Figure Functies::createCylinder(const int n, const double h, const Configuration
     string type = configuration["General"]["type"].as_string_or_die();
 
     //                                                    PUNTEN
-    if (type != "Wireframe")
+    if (type != "Wireframe" and type != "ZBufferedWireframe" and type != "ZBuffering")
     {
         cylinder.points.push_back(Vector3D::point(0, 0, h)); // top point
         cylinder.points.push_back(Vector3D::point(0, 0, 0)); // bottom point
@@ -1258,7 +1258,7 @@ Figure Functies::createCylinder(const int n, const double h, const Configuration
         vlakken.push_back(mantelvlak);
     }
 
-    if (type != "Wireframe")
+    if (type != "Wireframe" and type != "ZBufferedWireframe")
     {
         //                                                      TOP
         for (int i = 0; i < n; i++)
