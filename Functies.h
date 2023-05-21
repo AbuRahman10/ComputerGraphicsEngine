@@ -77,7 +77,7 @@ public:
 
     static Figure createCone(const int n, const double h);
 
-    static Figure createCylinder(const int n, const double h);
+    static Figure createCylinder(const int n, const double h, const Configuration &configuration);
 
     static Figure createTorus(const double r, const double R, const int n, const int m);
 

@@ -623,7 +623,7 @@ Lines2D Functies::pasFigure(Figures3D &figures3D, const Configuration &configura
         {
             int n = configuration[figure]["n"].as_int_or_die();
             double h = configuration[figure]["height"].as_double_or_die();
-            figure1 = createCylinder(n,h);
+            figure1 = createCylinder(n,h,configuration);
         }
         else if (type == "Torus" or type == "FractalTorus")
         {
@@ -1228,15 +1228,18 @@ Figure Functies::createCone(const int n, const double h)
     return cone;
 }
 
-Figure Functies::createCylinder(const int n, const double h)
+Figure Functies::createCylinder(const int n, const double h, const Configuration &configuration)
 {
     Figure cylinder;
     double PI = 3.14159265358979323846;
+    string type = configuration["General"]["type"].as_string_or_die();
 
     //                                                    PUNTEN
-
-    cylinder.points.push_back(Vector3D::point(0, 0, h)); // top point
-    cylinder.points.push_back(Vector3D::point(0, 0, 0)); // bottom point
+    if (type != "Wireframe")
+    {
+        cylinder.points.push_back(Vector3D::point(0, 0, h)); // top point
+        cylinder.points.push_back(Vector3D::point(0, 0, 0)); // bottom point
+    }
 
     for (int i = 0; i < 2*n; i++)
     {
@@ -1255,18 +1258,21 @@ Figure Functies::createCylinder(const int n, const double h)
         vlakken.push_back(mantelvlak);
     }
 
-    //                                                      TOP
-    for (int i = 0; i < n; i++)
+    if (type != "Wireframe")
     {
-        vector<int> topvlak{i*2, (i*2+2)%(2*n), 2*n};
-        vlakken.push_back(topvlak);
-    }
+        //                                                      TOP
+        for (int i = 0; i < n; i++)
+        {
+            vector<int> topvlak{i*2, (i*2+2)%(2*n), 2*n};
+            vlakken.push_back(topvlak);
+        }
 
-    //                                                     ONDER
-    for (int i = 0; i < n; i++)
-    {
-        vector<int> bottomvlak{i*2+1, (i*2+3)%(2*n), 2*n+1};
-        vlakken.push_back(bottomvlak);
+        //                                                     ONDER
+        for (int i = 0; i < n; i++)
+        {
+            vector<int> bottomvlak{i*2+1, (i*2+3)%(2*n), 2*n+1};
+            vlakken.push_back(bottomvlak);
+        }
     }
 
     for (int i = 0; i < vlakken.size(); i++)
