@@ -13,17 +13,17 @@ Draw = {
 
 #De Regels van het L Systeem
 Rules = {
-	F -> "F+F+F+FF"
+	F -> "F"
 }
 
 #De initile String
-Initiator = "F+F+F"
+Initiator = "F+F--F--F+++FF F+F--F--F+++FF ++ F+F--F--F+++FF ++ F+F--F--F+++FF ++ FFF F+F--F--F+++FF"
 
 #De gebruikte hoek (in graden)
-Angle = 120.0
+Angle = 60
 
 #De Initile hoek (in graden)
 StartingAngle = 0.0
 
 #Het Aantal keer dat een Symbool door zijn Replacement moet worden vervangen
-Iterations = 6
+Iterations = 0
